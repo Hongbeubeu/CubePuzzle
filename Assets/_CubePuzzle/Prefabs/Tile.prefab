@@ -96,3 +96,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0e98ddbafd64092b3f252dba644b209, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _tileMaterial: {fileID: 2100000, guid: 4b2a8e5b647663548b4a59f581f01b35, type: 2}
+  _selectedMaterial: {fileID: 2100000, guid: 5be357a72b34c0c438f88a33df8c3824, type: 2}
+  _mesh: {fileID: 371764899564926405}

@@ -1,12 +1,16 @@
-﻿using System;
-using DG.Tweening;
+﻿using DG.Tweening;
 using UnityEngine;
 
 namespace CubePuzzle.Gameplay
 {
     public class Tile : MonoBehaviour
     {
+        [SerializeField] private Material _tileMaterial;
+        [SerializeField] private Material _selectedMaterial;
+        [SerializeField] private MeshRenderer _mesh;
+        
         private Transform thisTrans;
+        private Vector3 rootPosition;
 
         private void Start()
         {
@@ -14,6 +18,20 @@ namespace CubePuzzle.Gameplay
             {
                 thisTrans = transform;
             }
+
+            rootPosition = thisTrans.localPosition;
+        }
+
+        public void OnSelected()
+        {
+            thisTrans.localPosition += thisTrans.up;
+            _mesh.material = _selectedMaterial;
+        }
+
+        public void OnDeSelected()
+        {
+            thisTrans.localPosition = rootPosition;
+            _mesh.material = _tileMaterial;
         }
 
         public void DoAnimation()
