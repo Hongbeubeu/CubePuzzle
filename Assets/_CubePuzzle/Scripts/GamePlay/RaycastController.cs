@@ -5,8 +5,8 @@ namespace CubePuzzle.Gameplay
     public class RaycastController : MonoBehaviour
     {
         [SerializeField] private Camera _mainCam;
-        [SerializeField] private GameObject _point;
         [SerializeField] private BoardController _boardController;
+        [SerializeField] private GameController _gameController;
 
         private void Start()
         {
@@ -22,9 +22,8 @@ namespace CubePuzzle.Gameplay
 
             if (!Physics.Raycast(ray, out var hit, _mainCam.farClipPlane)) return;
 
-            _point.transform.position = hit.point;
-            if (_boardController == null) return;
-            _boardController.OnSelectTile(hit.point);
+            if (_gameController != null) _gameController.SetBlockPositionRotation(hit.point);
+            if (_boardController != null) _boardController.OnSelectTile(hit.point);
         }
     }
 }

@@ -8,7 +8,7 @@ namespace CubePuzzle.Gameplay
         [SerializeField] private Material _tileMaterial;
         [SerializeField] private Material _selectedMaterial;
         [SerializeField] private MeshRenderer _mesh;
-        
+
         private Transform thisTrans;
         private Vector3 rootPosition;
 
@@ -24,7 +24,7 @@ namespace CubePuzzle.Gameplay
 
         public void OnSelected()
         {
-            thisTrans.localPosition += thisTrans.up;
+            thisTrans.position += thisTrans.up;
             _mesh.material = _selectedMaterial;
         }
 
@@ -36,7 +36,7 @@ namespace CubePuzzle.Gameplay
 
         public void DoAnimation()
         {
-            var target = thisTrans.localPosition + thisTrans.up;
+            var target = thisTrans.localPosition + thisTrans.up * 2f;
             thisTrans.DOLocalMove(target, 0.5f).SetEase(Ease.Linear).SetLoops(-1, LoopType.Yoyo);
         }
     }
