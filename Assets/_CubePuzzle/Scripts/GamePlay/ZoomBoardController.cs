@@ -4,14 +4,14 @@ namespace CubePuzzle.Gameplay
 {
     public class ZoomBoardController : MonoBehaviour
     {
-        [SerializeField] private Camera mainCam;
+        private Camera _mainCam;
         public float zoomSpeed = 5f;
         public float minFOV = 20f;
         public float maxFOV = 60f;
 
         private void Start()
         {
-            mainCam = GameController.Instance.MainCamera;
+            _mainCam = GameController.Instance.MainCamera;
         }
 
         private void Update()
@@ -28,13 +28,13 @@ namespace CubePuzzle.Gameplay
                 return;
 
             // Calculate the new field of view based on the scroll input
-            var newFOV = mainCam.fieldOfView - scrollWheelInput * zoomSpeed;
+            var newFOV = _mainCam.fieldOfView - scrollWheelInput * zoomSpeed;
 
             // Clamp the field of view to the specified range
             newFOV = Mathf.Clamp(newFOV, minFOV, maxFOV);
 
             // Set the new field of view
-            mainCam.fieldOfView = newFOV;
+            _mainCam.fieldOfView = newFOV;
         }
     }
 }

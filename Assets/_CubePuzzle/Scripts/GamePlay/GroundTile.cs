@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace CubePuzzle.Gameplay
 {
-    public class Tile : MonoBehaviour
+    public class GroundTile : MonoBehaviour
     {
         private Transform _thisTrans;
         private Vector3 _rootPosition;

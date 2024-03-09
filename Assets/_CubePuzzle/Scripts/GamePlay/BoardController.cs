@@ -2,6 +2,7 @@
 using Sirenix.OdinInspector;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Vector3 = UnityEngine.Vector3;
 
 namespace CubePuzzle.Gameplay
@@ -12,12 +13,14 @@ namespace CubePuzzle.Gameplay
         [SerializeField] private int _colNumber;
         [SerializeField] private float _cellUnitLength;
         [SerializeField] private Transform _parent;
-        [SerializeField] private Tile _tilePrefab;
 
-        private Tile currentSelectedTile;
+        [FormerlySerializedAs("_tilePrefab")] [SerializeField]
+        private GroundTile groundTilePrefab;
 
-        [DictionaryDrawerSettings] [ShowInInspector] [SerializeField]
-        private Vector2IntTileDictionary _tiles = new();
+        private GroundTile _currentSelectedGroundTile;
+
+        [FormerlySerializedAs("_tiles")] [DictionaryDrawerSettings] [ShowInInspector] [SerializeField]
+        private UnitySerializedDictionary<Vector2Int, GroundTile> groundTiles = new();
 
         [Button(ButtonSizes.Gigantic)]
         private void SpawnTiles()
@@ -48,7 +51,7 @@ namespace CubePuzzle.Gameplay
 
         private void ClearOldTiles()
         {
-            _tiles.Clear();
+            groundTiles.Clear();
             _parent.ClearAllChildren();
         }
 
@@ -65,12 +68,12 @@ namespace CubePuzzle.Gameplay
                 currentPos.x = minX;
                 for (var col = 0; col < _colNumber; col++)
                 {
-                    var tile = PrefabUtility.InstantiatePrefab(_tilePrefab, _parent) as Tile;
+                    var tile = PrefabUtility.InstantiatePrefab(groundTilePrefab, _parent) as GroundTile;
                     tile.transform.localPosition = currentPos;
 
                     var x = Mathf.FloorToInt(currentPos.x / _cellUnitLength);
                     var y = Mathf.FloorToInt(currentPos.z / _cellUnitLength);
-                    _tiles.Add(new Vector2Int(x, y), tile);
+                    groundTiles.Add(new Vector2Int(x, y), tile);
                     currentPos.x += _cellUnitLength;
                 }
 
@@ -80,24 +83,24 @@ namespace CubePuzzle.Gameplay
 
         public void OnSelectTile(Vector3 position)
         {
-            if (currentSelectedTile)
-                currentSelectedTile.OnDeSelected();
+            if (_currentSelectedGroundTile)
+                _currentSelectedGroundTile.OnDeSelected();
 
             position = transform.InverseTransformPoint(position);
 
             var currentGridPos = WorldPosition2GridPosition(position);
 
-            if (!_tiles.TryGetValue(currentGridPos, out var tile)) return;
+            if (!groundTiles.TryGetValue(currentGridPos, out var tile)) return;
 
-            currentSelectedTile = tile;
-            currentSelectedTile.OnSelected();
+            _currentSelectedGroundTile = tile;
+            _currentSelectedGroundTile.OnSelected();
         }
 
         public void OnDeselectTile()
         {
-            if (currentSelectedTile)
-                currentSelectedTile.OnDeSelected();
-            currentSelectedTile = null;
+            if (_currentSelectedGroundTile)
+                _currentSelectedGroundTile.OnDeSelected();
+            _currentSelectedGroundTile = null;
         }
 
         public Vector2Int WorldPosition2GridPosition(Vector3 worldPosition)

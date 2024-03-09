@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace CubePuzzle.Gameplay
 {
-    public abstract class UnitySerializedDictionary<TKey, TValue> : Dictionary<TKey, TValue>,
+    [Serializable]
+    public class UnitySerializedDictionary<TKey, TValue> : Dictionary<TKey, TValue>,
         ISerializationCallbackReceiver
     {
         [SerializeField, HideInInspector] private List<TKey> keyData = new();
