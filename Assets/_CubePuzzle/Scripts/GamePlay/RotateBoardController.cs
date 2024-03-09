@@ -7,7 +7,6 @@ namespace CubePuzzle.Gameplay
         [SerializeField] private Camera _mainCam;
         [SerializeField] private float _rotationSpeed = 10f;
         [SerializeField] private Transform _thisTransform;
-        [SerializeField] private GameController _gameController;
         private Vector3 _previousMousePosition;
         private bool _isDragging;
         private bool _isZooming;
@@ -27,7 +26,7 @@ namespace CubePuzzle.Gameplay
 
         private void Update()
         {
-            if (_gameController.IsHoldBlock) return;
+            if (GameController.Instance.IsHoldBlock) return;
 
             HandleInput();
 

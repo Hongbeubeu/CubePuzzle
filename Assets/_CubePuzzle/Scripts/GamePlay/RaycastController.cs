@@ -6,7 +6,6 @@ namespace CubePuzzle.Gameplay
     {
         [SerializeField] private Camera _mainCam;
         [SerializeField] private BoardController _boardController;
-        [SerializeField] private GameController _gameController;
 
         private void Start()
         {
@@ -22,7 +21,7 @@ namespace CubePuzzle.Gameplay
 
             if (!Physics.Raycast(ray, out var hit, _mainCam.farClipPlane)) return;
 
-            if (_gameController != null) _gameController.SetBlockPositionRotation(hit.point);
+            if (GameController.Instance != null) GameController.Instance.SetBlockPositionRotation(hit.point);
             if (_boardController != null) _boardController.OnSelectTile(hit.point);
         }
     }

@@ -1,9 +1,9 @@
-﻿using System;
+﻿using QuickEngine.Common;
 using UnityEngine;
 
 namespace CubePuzzle.Gameplay
 {
-    public class GameController : MonoBehaviour
+    public class GameController : Singleton<GameController>
     {
         public bool IsHoldBlock;
 
