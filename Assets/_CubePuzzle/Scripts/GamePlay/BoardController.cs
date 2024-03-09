@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEditor;
 using UnityEngine;
@@ -15,13 +14,10 @@ namespace CubePuzzle.Gameplay
         [SerializeField] private Transform _parent;
         [SerializeField] private Tile _tilePrefab;
 
-        [DictionaryDrawerSettings] [ShowInInspector]
-        private Dictionary<Vector2Int, Tile> _tiles = new();
+        private Tile currentSelectedTile;
 
-        private void Start()
-        {
-            SpawnTiles();
-        }
+        [DictionaryDrawerSettings] [ShowInInspector] [SerializeField]
+        private Vector2IntTileDictionary _tiles = new();
 
         [Button(ButtonSizes.Gigantic)]
         private void SpawnTiles()
@@ -82,12 +78,10 @@ namespace CubePuzzle.Gameplay
             }
         }
 
-        private Tile _currentSelectedTile;
-
         public void OnSelectTile(Vector3 position)
         {
-            if (_currentSelectedTile)
-                _currentSelectedTile.OnDeSelected();
+            if (currentSelectedTile)
+                currentSelectedTile.OnDeSelected();
 
             position = transform.InverseTransformPoint(position);
 
@@ -95,8 +89,15 @@ namespace CubePuzzle.Gameplay
 
             if (!_tiles.TryGetValue(currentGridPos, out var tile)) return;
 
-            _currentSelectedTile = tile;
-            _currentSelectedTile.OnSelected();
+            currentSelectedTile = tile;
+            currentSelectedTile.OnSelected();
+        }
+
+        public void OnDeselectTile()
+        {
+            if (currentSelectedTile)
+                currentSelectedTile.OnDeSelected();
+            currentSelectedTile = null;
         }
 
         public Vector2Int WorldPosition2GridPosition(Vector3 worldPosition)

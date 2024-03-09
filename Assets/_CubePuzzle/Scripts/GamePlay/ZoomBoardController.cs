@@ -11,10 +11,7 @@ namespace CubePuzzle.Gameplay
 
         private void Start()
         {
-            if (mainCam == null)
-            {
-                mainCam = Camera.main;
-            }
+            mainCam = GameController.Instance.MainCamera;
         }
 
         private void Update()

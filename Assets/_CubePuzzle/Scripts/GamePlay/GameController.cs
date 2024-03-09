@@ -5,31 +5,46 @@ namespace CubePuzzle.Gameplay
 {
     public class GameController : Singleton<GameController>
     {
+        private Transform _block;
+        private Transform _boardTrans;
+
+        [SerializeField] private BoardController boardController;
+        [SerializeField] private Camera mainCamera;
+
+        public Camera MainCamera => mainCamera;
+
         public bool IsHoldBlock { get; private set; }
-
-        private Transform block;
-        [SerializeField] private Transform board;
-
-        public void SetBlockPositionRotation(Vector3 position)
-        {
-            if (!IsHoldBlock || block == null) return;
-
-            position += board.up * 2f;
-            block.position = position;
-            block.rotation = board.rotation;
-        }
 
         private void Start()
         {
+            RefreshBlock();
+
+            _boardTrans = boardController.transform;
+        }
+
+        public void SetBlockPositionRotation(Vector3 position)
+        {
+            if (!IsHoldBlock || _block == null) return;
+
+            position += _boardTrans.up * 2f;
+            _block.position = position;
+            _block.rotation = _boardTrans.rotation;
+        }
+
+        public void SetHoldBlock()
+        {
+            if (IsHoldBlock) return;
+            IsHoldBlock = true;
             RefreshBlock();
         }
 
         private void Update()
         {
-            if (Input.GetKeyDown(KeyCode.Mouse1))
+            if (Input.GetKeyUp(KeyCode.Mouse0))
             {
-                IsHoldBlock = !IsHoldBlock;
+                IsHoldBlock = false;
                 RefreshBlock();
+                boardController.OnDeselectTile();
             }
         }
 
@@ -37,12 +52,12 @@ namespace CubePuzzle.Gameplay
         {
             if (IsHoldBlock)
             {
-                block = GameManager.Instance.Database.ObjectPooler.InstantiateCube().transform;
+                _block = GameManager.Instance.Database.ObjectPooler.InstantiateCube().transform;
             }
-            else if (block != null)
+            else if (_block != null)
             {
-                GameManager.Instance.Database.ObjectPooler.ReturnPoolCube(block.gameObject);
-                block = null;
+                GameManager.Instance.Database.ObjectPooler.ReturnPoolCube(_block.gameObject);
+                _block = null;
             }
         }
     }

@@ -1,32 +1,27 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace CubePuzzle.Gameplay
 {
     public class RotateBoardController : MonoBehaviour
     {
-        [SerializeField] private Camera _mainCam;
-        [SerializeField] private float _rotationSpeed = 10f;
-        [SerializeField] private Transform _thisTransform;
+        private Camera _mainCam;
+        private Transform _thisTransform;
         private Vector3 _previousMousePosition;
         private bool _isDragging;
         private bool _isZooming;
 
+        [SerializeField] private float rotationSpeed = 10f;
+
         private void Start()
         {
-            if (_mainCam == null)
-            {
-                _mainCam = Camera.main;
-            }
-
-            if (_thisTransform == null)
-            {
-                _thisTransform = transform;
-            }
+            _mainCam = GameController.Instance.MainCamera;
+            _thisTransform = transform;
         }
 
         private void Update()
         {
-            if (GameController.Instance.IsHoldBlock) return;
+            if (GameController.Instance.IsHoldBlock || !EventSystem.current.IsPointerOverGameObject()) return;
 
             HandleInput();
 
@@ -58,11 +53,11 @@ namespace CubePuzzle.Gameplay
             // Rotate the object based on the mouse movement
             if (Mathf.Abs(mouseDelta.x) > Mathf.Abs(mouseDelta.y))
             {
-                _thisTransform.Rotate(_thisTransform.up, -mouseDelta.x * _rotationSpeed * Time.deltaTime, Space.World);
+                _thisTransform.Rotate(_thisTransform.up, -mouseDelta.x * rotationSpeed * Time.deltaTime, Space.World);
             }
             else
             {
-                _thisTransform.Rotate(_mainCam.transform.right, mouseDelta.y * _rotationSpeed * Time.deltaTime,
+                _thisTransform.Rotate(_mainCam.transform.right, mouseDelta.y * rotationSpeed * Time.deltaTime,
                     Space.World);
             }
 
