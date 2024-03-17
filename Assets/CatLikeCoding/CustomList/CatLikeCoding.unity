@@ -236,14 +236,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0b2b488da055453d960a9c9c5521bb0f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  integers: 00000000
+  integers: 0000000001000000
   vectors:
-  - {x: 0, y: 0, z: 0}
+  - {x: 0, y: 1, z: 0}
+  - {x: 0, y: 1, z: 0}
   - {x: 0, y: 0, z: 0}
   colorPoints:
-  - color: {r: 0, g: 0, b: 0, a: 0}
+  - color: {r: 0, g: 0, b: 0, a: 1}
     position: {x: 0, y: 0, z: 0}
-  - color: {r: 0.8962264, g: 0.2240566, b: 0.2240566, a: 0}
+  - color: {r: 0.8962264, g: 0.2240566, b: 0.2240566, a: 1}
     position: {x: 0, y: 0, z: 0}
   objects:
   - {fileID: 0}
