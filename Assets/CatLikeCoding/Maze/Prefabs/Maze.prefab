@@ -44,10 +44,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1592517cf81484424a60f86dfcafc7eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  roomSettings:
+  - floorMaterial: {fileID: 2100000, guid: 64924f607fa5b0f4f8a09d63fc9b0426, type: 2}
+    wallMaterial: {fileID: 2100000, guid: 56a0d3215522b5944809f1d613c8e411, type: 2}
+  - floorMaterial: {fileID: 2100000, guid: 80d95afe37423294fa2d12fa74399c0a, type: 2}
+    wallMaterial: {fileID: 2100000, guid: 5e1c20e6c4e7a624f802f0378304d073, type: 2}
+  - floorMaterial: {fileID: 2100000, guid: bf9b45309569f234f9984af17671a5f1, type: 2}
+    wallMaterial: {fileID: 2100000, guid: ec544aa4470ec12499331ad38ab376fd, type: 2}
+  - floorMaterial: {fileID: 2100000, guid: 2faaab52ebdbaf649899224566aa8559, type: 2}
+    wallMaterial: {fileID: 2100000, guid: eb2a0c775b672ec40a98a6214b4c0014, type: 2}
   size:
-    x: 20
-    z: 20
+    x: 10
+    z: 10
   cellPrefab: {fileID: 11400000, guid: 8cc5710f710a24360a566370d7049cf8, type: 3}
   generationStepDelay: 0.01
   passagePrefab: {fileID: 11400000, guid: 4db582300649e4e399ee4a2665f9e8e6, type: 3}
-  wallPrefab: {fileID: 11400000, guid: 2970089c471ef4c599835c1992954af5, type: 3}
+  wallPrefabs:
+  - {fileID: 11400000, guid: 2970089c471ef4c599835c1992954af5, type: 3}
+  - {fileID: 11400000, guid: 2970089c471ef4c599835c1992954af5, type: 3}
+  - {fileID: 11400000, guid: 2970089c471ef4c599835c1992954af5, type: 3}
+  - {fileID: 11400000, guid: 2970089c471ef4c599835c1992954af5, type: 3}
+  - {fileID: 11400000, guid: 2970089c471ef4c599835c1992954af5, type: 3}
+  - {fileID: 11400000, guid: 2970089c471ef4c599835c1992954af5, type: 3}
+  - {fileID: 11400000, guid: 2970089c471ef4c599835c1992954af5, type: 3}
+  - {fileID: 7120704198682208063, guid: 9590887d73cfb2c4398f0fbd1ab432e4, type: 3}
+  - {fileID: 5828659012656174263, guid: a111fe2fea5cb3f40b50d5e31a8c825b, type: 3}
+  - {fileID: 8427876251945121428, guid: d181665f1e0a31e4a9afd685cf34d6ac, type: 3}
+  doorPrefab: {fileID: 7927706121889949439, guid: 5153fd0d1cc0ff0489526bdb1353b98f, type: 3}
+  doorProbability: 0.116
