@@ -271,7 +271,7 @@ namespace PathCreationEditor {
 
         #region Scene GUI
 
-        void OnSceneGUI () {
+        protected virtual void OnSceneGUI () {
             if (!globalDisplaySettings.visibleBehindObjects) {
                 Handles.zTest = UnityEngine.Rendering.CompareFunction.LessEqual;
             }

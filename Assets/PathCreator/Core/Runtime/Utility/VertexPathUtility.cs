@@ -129,11 +129,11 @@ namespace PathCreation.Utility
 
        
 	   public class PathSplitData {
-		   public List<Vector3> vertices = new List<Vector3>();
-		   public List<Vector3> tangents = new List<Vector3>();
-		   public List<float> cumulativeLength = new List<float>();
-		   public List<int> anchorVertexMap = new List<int>();
-		   public MinMax3D minMax = new MinMax3D();
+		   public List<Vector3> vertices = new();
+		   public List<Vector3> tangents = new();
+		   public List<float> cumulativeLength = new();
+		   public List<int> anchorVertexMap = new();
+		   public MinMax3D minMax = new();
 	   }
     }
 }

@@ -156,19 +156,16 @@ MonoBehaviour:
     _bezierPath:
       points:
       - {x: -4.352813, y: 0, z: -0.11318302}
-      - {x: -3.0126107, y: 0, z: 1.9328305}
-      - {x: -1.6724086, y: 0, z: 3.978844}
+      - {x: -3.6011786, y: 0, z: 3.0400624}
+      - {x: -1.9630976, y: 0, z: 3.570601}
       - {x: 0.14566877, y: 0, z: 3.9488804}
-      - {x: 1.8945767, y: 0, z: 3.9200568}
-      - {x: 4.376177, y: 0, z: 1.649693}
-      - {x: 4.3418903, y: 0, z: -0.099116325}
-      - {x: 4.3079343, y: 0, z: -1.8310531}
-      - {x: 2.1700733, y: 0, z: -2.8865702}
-      - {x: 0.032212257, y: 0, z: -3.9420872}
+      - {x: 2.254435, y: 0, z: 4.32716}
+      - {x: 3.1513267, y: 0, z: -3.0010333}
+      - {x: 2.0740087, y: 0, z: -3.4724445}
       isClosed: 0
       space: 2
-      controlMode: 3
-      autoControlLength: 0.3
+      controlMode: 1
+      autoControlLength: 0.107
       boundsUpToDate: 0
       bounds:
         m_Center: {x: 0.005727291, y: 0.51712644, z: -0.38885796}
@@ -177,29 +174,28 @@ MonoBehaviour:
       - 0
       - 0
       - 0
-      - 0
       globalNormalsAngle: 69
       flipNormals: 0
-    vertexPathUpToDate: 0
-    vertexPathMaxAngleError: 0.3
-    vertexPathMinVertexSpacing: 0
+    vertexPathUpToDate: 1
+    vertexPathMaxAngleError: 20.3
+    vertexPathMinVertexSpacing: 0.599
     showTransformTool: 1
     showPathBounds: 0
     showPerSegmentBounds: 0
     displayAnchorPoints: 1
     displayControlPoints: 1
-    bezierHandleScale: 2
-    globalDisplaySettingsFoldout: 0
-    keepConstantHandleSize: 0
-    showNormalsInVertexMode: 0
+    bezierHandleScale: 1
+    globalDisplaySettingsFoldout: 1
+    keepConstantHandleSize: 1
+    showNormalsInVertexMode: 1
     showBezierPathInVertexMode: 0
     showDisplayOptions: 1
     showPathOptions: 1
-    showVertexPathDisplayOptions: 0
+    showVertexPathDisplayOptions: 1
     showVertexPathOptions: 1
     showNormals: 1
     showNormalsHelpInfo: 0
-    tabIndex: 0
+    tabIndex: 1
   initialized: 1
 --- !u!4 &184727959
 Transform:
@@ -291,7 +287,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4125965570099986, guid: 761d600d1e80341ac97f3228771ce637, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 2.36
       objectReference: {fileID: 0}
     - target: {fileID: 4125965570099986, guid: 761d600d1e80341ac97f3228771ce637, type: 3}
       propertyPath: m_LocalPosition.y
