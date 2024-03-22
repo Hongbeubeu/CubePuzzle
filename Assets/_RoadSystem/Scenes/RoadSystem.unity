@@ -887,6 +887,9 @@ MonoBehaviour:
   pathCreator: {fileID: 1786731542}
   endOfPathInstruction: 2
   speed: 5
+  path:
+  - {fileID: 1786731542}
+  - {fileID: 1454304977}
   target: {fileID: 1116828183}
 --- !u!4 &4175567524963190
 Transform:
