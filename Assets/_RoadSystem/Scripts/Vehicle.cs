@@ -4,6 +4,7 @@ using DG.Tweening;
 using PathCreation;
 using PathCreation.Examples;
 using Sirenix.OdinInspector;
+using Sirenix.Utilities;
 using UnityEngine;
 
 namespace RoadSystem
@@ -18,13 +19,13 @@ namespace RoadSystem
         [SerializeField] private TaskHandler taskHandler;
         [SerializeField] private RoadManager roadManager;
 
-        private float _length;
         private int _currentPathIndex;
+        private RoadSegment _currentRoadSegment;
         private Tween _currentTween;
         private Transform _transform;
-        private bool IsLastSegment => _currentPathIndex == path.Count - 1;
 
         public Action completeAction;
+        private bool IsLastSegment => _currentPathIndex == path.Count - 1;
 
         public bool LookingForward
         {
@@ -58,59 +59,81 @@ namespace RoadSystem
 
         #endregion
 
-        [Button(ButtonSizes.Gigantic)]
         public void StartMove()
         {
             Stop();
-            pathCreator = null;
+            _currentRoadSegment = null;
             DoMove();
         }
 
         private void DoMove()
         {
-            if (path == null)
-            {
-                Debug.LogError("Path is null");
-                return;
-            }
+            if (!VerifyPath()) return;
 
-            if (pathCreator == null)
-            {
-                _currentPathIndex = 0;
-                pathCreator = path[_currentPathIndex].PathCreator;
-            }
+            // Get closet distance along path
+            var fromDistance = _currentRoadSegment.PathCreator.path.GetClosestDistanceAlongPath(_transform.position);
 
-            distanceTravelled = 0;
-
+            // Find distance where vehicle run to
+            float toDistance;
             if (MoveToPosition && IsLastSegment)
             {
-                _length = pathCreator.path.GetClosestDistanceAlongPath(DestinationPosition);
+                toDistance = _currentRoadSegment.PathCreator.path.GetClosestDistanceAlongPath(DestinationPosition);
             }
             else
             {
-                _length = pathCreator.path.length;
+                toDistance = _currentRoadSegment.GetDistanceConnectToOtherSegment(Path[_currentPathIndex + 1], out var length)
+                              ? length
+                              : _currentRoadSegment.PathCreator.path.length;
             }
 
-            var duration = (_length - distanceTravelled) / speed;
-            var fromValue = distanceTravelled;
+            var duration = Mathf.Abs(toDistance - fromDistance) / speed;
+            
+            _isRunInReverse = fromDistance > toDistance;
 
-            _currentTween = DOVirtual.Float(fromValue, _length, duration, value =>
+            _currentTween = DOVirtual.Float(fromDistance, toDistance, duration, OnVirtualUpdate)
+                                     .SetEase(Ease.Linear)
+                                     .OnComplete(NextPath);
+        }
+
+        private bool VerifyPath()
+        {
+            if (path.IsNullOrEmpty())
             {
-                distanceTravelled = value;
+                Debug.LogError("Path is null or empty");
+                return false;
+            }
 
-                _transform.position = pathCreator.path.GetPointAtDistance(distanceTravelled, endOfPathInstruction);
-                _transform.rotation = pathCreator.path.GetRotationAtDistance(distanceTravelled, endOfPathInstruction);
+            if (_currentRoadSegment != null) return true;
 
-                if (endOfPathInstruction is EndOfPathInstruction.BackLoop or EndOfPathInstruction.BackStop)
-                {
-                    _transform.forward = -_transform.forward;
-                }
+            _currentPathIndex = 0;
+            _currentRoadSegment = path[_currentPathIndex];
 
-                if (!isLookingForward)
-                {
-                    _transform.forward = -_transform.forward;
-                }
-            }).SetEase(Ease.Linear).OnComplete(NextPath);
+            return true;
+        }
+
+        private bool _isRunInReverse;
+
+        private void OnVirtualUpdate(float travelled)
+        {
+            _transform.position =
+                _currentRoadSegment.PathCreator.path.GetPointAtDistance(travelled, endOfPathInstruction);
+            _transform.rotation =
+                _currentRoadSegment.PathCreator.path.GetRotationAtDistance(travelled, endOfPathInstruction);
+
+            if (endOfPathInstruction is EndOfPathInstruction.BackLoop or EndOfPathInstruction.BackStop)
+            {
+                _transform.forward = -_transform.forward;
+            }
+
+            if (_isRunInReverse)
+            {
+                _transform.forward = -_transform.forward;
+            }
+
+            if (!isLookingForward)
+            {
+                _transform.forward = -_transform.forward;
+            }
         }
 
         private void NextPath()
@@ -118,7 +141,7 @@ namespace RoadSystem
             _currentTween?.Kill();
             _currentPathIndex++;
             _currentPathIndex %= path.Count;
-            pathCreator = path[_currentPathIndex].PathCreator;
+            _currentRoadSegment = path[_currentPathIndex];
             if (endOfTotalPathInstruction == EndOfPathInstruction.Stop && _currentPathIndex == 0)
             {
                 completeAction?.Invoke();
@@ -152,9 +175,15 @@ namespace RoadSystem
         [SerializeField] private Transform point2;
 
         [Button(ButtonSizes.Gigantic)]
-        public void DoMoveTask()
+        public void DoMoveTask1()
         {
             AddTaskMoveForward(point1.position);
+            taskHandler.Work();
+        }
+
+        [Button(ButtonSizes.Gigantic)]
+        public void DoMoveTask2()
+        {
             AddTaskMoveBackward(point2.position);
             taskHandler.Work();
         }
