@@ -35,7 +35,7 @@ namespace RoadSystem
             _vehicle.StartMove();
         }
 
-        private List<RoadSegment> FindPath(Vector3 source, Vector3 target)
+        public List<RoadSegment> FindPath(Vector3 source, Vector3 target)
         {
             var fromSegment = FindNearestSegment(source);
             var targetSegment = FindNearestSegment(target);
@@ -118,15 +118,15 @@ namespace RoadSystem
         private void OnDrawGizmos()
         {
             var sourceSegment = FindNearestSegment(_source.position);
-            var point1 = sourceSegment.PathCreator.path.GetClosestPointOnPath(_source.position);
+            var p1 = sourceSegment.PathCreator.path.GetClosestPointOnPath(_source.position);
 
             Gizmos.color = Color.blue;
-            Gizmos.DrawLine(_source.position, point1);
+            Gizmos.DrawLine(_source.position, p1);
             var targetSegment = FindNearestSegment(_target.position);
-            var point2 = targetSegment.PathCreator.path.GetClosestPointOnPath(_target.position);
+            var p2 = targetSegment.PathCreator.path.GetClosestPointOnPath(_target.position);
 
             Gizmos.color = Color.red;
-            Gizmos.DrawLine(_target.position, point2);
+            Gizmos.DrawLine(_target.position, p2);
         }
 
 #endif
