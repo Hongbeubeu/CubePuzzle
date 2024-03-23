@@ -147,7 +147,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 133653670}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 4.52, y: 0, z: -7.4}
+  m_LocalPosition: {x: 3, y: 0, z: 4}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -166,7 +166,7 @@ GameObject:
   - component: {fileID: 219720313}
   - component: {fileID: 219720315}
   m_Layer: 0
-  m_Name: Segment
+  m_Name: GarageSegment
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -187,10 +187,16 @@ MonoBehaviour:
   editorData:
     _bezierPath:
       points:
-      - {x: -8.351096, y: 0, z: 3.7060728}
-      - {x: -7.351096, y: 0, z: 3.7060728}
-      - {x: 1, y: 0, z: 0}
-      - {x: 2, y: 0, z: 0}
+      - {x: 0, y: 0, z: 0}
+      - {x: 0, y: 0, z: 2}
+      - {x: 0, y: 0, z: 4}
+      - {x: 0, y: 0, z: 6}
+      - {x: 0, y: 0, z: 7.5}
+      - {x: -2, y: 0, z: 7.5}
+      - {x: -2, y: 0, z: 6}
+      - {x: -2, y: 0, z: 4}
+      - {x: -2, y: 0, z: 2}
+      - {x: -2, y: 0, z: 0}
       isClosed: 0
       space: 0
       controlMode: 0
@@ -200,6 +206,8 @@ MonoBehaviour:
         m_Center: {x: -3.175548, y: 1.3886038, z: 1.8530364}
         m_Extent: {x: 5.175548, y: 1.4343191, z: 1.8530364}
       perAnchorNormalsAngle:
+      - 0
+      - 0
       - 0
       - 0
       globalNormalsAngle: 90
@@ -253,11 +261,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pathCreator: {fileID: 219720313}
-  roadIns: []
-  roadOuts:
-  - {fileID: 430985274}
-  - {fileID: 1652913081}
+  roadIns:
   - {fileID: 295146918}
+  - {fileID: 1652913081}
+  - {fileID: 430985274}
+  roadOuts:
+  - {fileID: 295146918}
+  - {fileID: 1652913081}
+  - {fileID: 430985274}
 --- !u!1 &295146915
 GameObject:
   m_ObjectHideFlags: 0
@@ -270,7 +281,7 @@ GameObject:
   - component: {fileID: 295146916}
   - component: {fileID: 295146918}
   m_Layer: 0
-  m_Name: Segment (1)
+  m_Name: ParkingSlot 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -291,19 +302,23 @@ MonoBehaviour:
   editorData:
     _bezierPath:
       points:
-      - {x: 2, y: 0, z: 0}
-      - {x: 3, y: 0, z: 0}
-      - {x: 8.400968, y: 0, z: 5.375389}
-      - {x: 9.400968, y: 0, z: 5.375389}
+      - {x: 0, y: 0, z: 5.5}
+      - {x: 0, y: 0, z: 4}
+      - {x: 1.8, y: 0, z: 4}
+      - {x: 2, y: 0, z: 4}
+      - {x: 2.2, y: 0, z: 4}
+      - {x: 2.8, y: 0, z: 4}
+      - {x: 3, y: 0, z: 4}
       isClosed: 0
       space: 0
-      controlMode: 0
+      controlMode: 1
       autoControlLength: 0.3
       boundsUpToDate: 0
       bounds:
-        m_Center: {x: 5.700484, y: -0.0000040605664, z: 2.6876945}
-        m_Extent: {x: 3.7004838, y: 0.14433444, z: 2.6876945}
+        m_Center: {x: 1.499362, y: -0.15382361, z: 4.658493}
+        m_Extent: {x: 1.514672, y: 0.15382361, z: 0.6670568}
       perAnchorNormalsAngle:
+      - 0
       - 0
       - 0
       globalNormalsAngle: 90
@@ -342,7 +357,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1283346008}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &295146918
 MonoBehaviour:
@@ -359,7 +374,8 @@ MonoBehaviour:
   pathCreator: {fileID: 295146916}
   roadIns:
   - {fileID: 219720315}
-  roadOuts: []
+  roadOuts:
+  - {fileID: 219720315}
 --- !u!1 &333985684
 GameObject:
   m_ObjectHideFlags: 0
@@ -384,7 +400,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 333985684}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -5.75, y: 0, z: 2.94}
+  m_LocalPosition: {x: 0, y: 0, z: 5.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -403,7 +419,7 @@ GameObject:
   - component: {fileID: 430985272}
   - component: {fileID: 430985274}
   m_Layer: 0
-  m_Name: Segment (3)
+  m_Name: ParkingSlot 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -424,19 +440,23 @@ MonoBehaviour:
   editorData:
     _bezierPath:
       points:
-      - {x: 2, y: 0, z: 0}
-      - {x: 3, y: 0, z: 0}
-      - {x: 4.0823355, y: 0, z: -7.969141}
-      - {x: 5.0823355, y: 0, z: -7.969141}
+      - {x: -2, y: 0, z: 2.5}
+      - {x: -2, y: 0, z: 4}
+      - {x: -3.8, y: 0, z: 4}
+      - {x: -4, y: 0, z: 4}
+      - {x: -4.2, y: 0, z: 4}
+      - {x: -4.5, y: 0, z: 4}
+      - {x: -5, y: 0, z: 4}
       isClosed: 0
       space: 0
-      controlMode: 0
+      controlMode: 1
       autoControlLength: 0.3
       boundsUpToDate: 0
       bounds:
-        m_Center: {x: 3.5411677, y: 0.00000094622374, z: -3.9845705}
-        m_Extent: {x: 1.5411677, y: 0.14433831, z: 3.9845705}
+        m_Center: {x: -3.4379458, y: 0.31679106, z: 3.5879226}
+        m_Extent: {x: 1.4184127, y: 0.31679106, z: 0.5040288}
       perAnchorNormalsAngle:
+      - 0
       - 0
       - 0
       globalNormalsAngle: 90
@@ -475,7 +495,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1283346008}
-  m_RootOrder: 3
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &430985274
 MonoBehaviour:
@@ -492,7 +512,8 @@ MonoBehaviour:
   pathCreator: {fileID: 430985272}
   roadIns:
   - {fileID: 219720315}
-  roadOuts: []
+  roadOuts:
+  - {fileID: 219720315}
 --- !u!1 &482406696
 GameObject:
   m_ObjectHideFlags: 0
@@ -601,7 +622,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1116828182}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 7.5, y: -1.8979063, z: 1.23}
+  m_LocalPosition: {x: -4.57, y: -1.8979063, z: 0.05}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -638,9 +659,9 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 219720314}
+  - {fileID: 430985273}
   - {fileID: 295146917}
   - {fileID: 1652913080}
-  - {fileID: 430985273}
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -801,7 +822,7 @@ GameObject:
   - component: {fileID: 1652913079}
   - component: {fileID: 1652913081}
   m_Layer: 0
-  m_Name: Segment (2)
+  m_Name: ParkingSlot 3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -822,19 +843,23 @@ MonoBehaviour:
   editorData:
     _bezierPath:
       points:
-      - {x: 2, y: 0, z: 0}
-      - {x: 2.5, y: 0, z: 0}
-      - {x: 2.9368525, y: 0, z: 7.751711}
-      - {x: 3.4368525, y: 0, z: 7.751711}
+      - {x: 0, y: 0, z: 4.5}
+      - {x: 0, y: 0, z: 3}
+      - {x: 1.8, y: 0, z: 3}
+      - {x: 2, y: 0, z: 3}
+      - {x: 2.2, y: 0, z: 3}
+      - {x: 2.8, y: 0, z: 3}
+      - {x: 3, y: 0, z: 3}
       isClosed: 0
       space: 0
-      controlMode: 0
+      controlMode: 1
       autoControlLength: 0.3
       boundsUpToDate: 0
       bounds:
-        m_Center: {x: 2.174641, y: 1.7184262, z: 3.8758554}
-        m_Extent: {x: 0.1746409, y: 1.7184262, z: 3.8758554}
+        m_Center: {x: 1.4654784, y: -0.068359375, z: 3.4856205}
+        m_Extent: {x: 1.4847279, y: 0.068359375, z: 0.46932304}
       perAnchorNormalsAngle:
+      - 0
       - 0
       - 0
       globalNormalsAngle: 90
@@ -873,7 +898,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1283346008}
-  m_RootOrder: 2
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1652913081
 MonoBehaviour:
@@ -890,7 +915,8 @@ MonoBehaviour:
   pathCreator: {fileID: 1652913079}
   roadIns:
   - {fileID: 219720315}
-  roadOuts: []
+  roadOuts:
+  - {fileID: 219720315}
 --- !u!1 &1048366934829894
 GameObject:
   m_ObjectHideFlags: 0
@@ -1023,7 +1049,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1576909917639574}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -9.36, y: 0, z: 3.81}
+  m_LocalPosition: {x: 0.99, y: 0, z: -0.86}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1044,10 +1070,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pathCreator: {fileID: 0}
-  endOfPathInstruction: 1
+  endOfPathInstruction: 2
   speed: 3
   isLookingForward: 0
-  endOfTotalPathInstruction: 0
+  endOfTotalPathInstruction: 2
   path: []
   taskHandler: {fileID: 4125964633052206}
   roadManager: {fileID: 1283346009}

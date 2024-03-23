@@ -14,7 +14,7 @@ namespace PathCreation.Examples
         public float speed = 5;
         protected float distanceTravelled;
 
-        void Start()
+        protected virtual void Start()
         {
             if (pathCreator != null)
             {
@@ -23,7 +23,7 @@ namespace PathCreation.Examples
             }
         }
 
-        protected void Update()
+        protected virtual void Update()
         {
             if (pathCreator != null)
             {

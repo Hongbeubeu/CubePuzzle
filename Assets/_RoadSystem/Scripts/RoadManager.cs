@@ -42,6 +42,25 @@ namespace RoadSystem
         {
             var fromSegment = FindNearestSegment(src);
             var targetSegment = FindNearestSegment(dest);
+
+            if (fromSegment == targetSegment)
+            {
+                return new List<RoadSegment> { fromSegment };
+            }
+
+            if (fromSegment.RoadOuts.Contains(targetSegment))
+            {
+                if (Vector3.Distance(fromSegment.PathCreator.path.GetClosestPointOnPath(src), src) < 0.001f)
+                {
+                    return new List<RoadSegment> { targetSegment };
+                }
+
+                if (Vector3.Distance(targetSegment.PathCreator.path.GetClosestPointOnPath(dest), dest) < 0.001f)
+                {
+                    return new List<RoadSegment> { fromSegment };
+                }
+            }
+
             return FindPath(fromSegment, targetSegment);
         }
 

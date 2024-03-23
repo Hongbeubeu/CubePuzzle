@@ -21,8 +21,10 @@ namespace RoadSystem
         private float _length;
         private int _currentPathIndex;
         private Tween _currentTween;
+        private Transform _transform;
+        private bool IsLastSegment => _currentPathIndex == path.Count - 1;
 
-        public Action CompleteAction;
+        public Action completeAction;
 
         public bool LookingForward
         {
@@ -34,6 +36,24 @@ namespace RoadSystem
         {
             get => path;
             set => path = value;
+        }
+
+        public bool MoveToPosition { get; set; }
+        public Vector3 DestinationPosition { get; set; }
+
+        #endregion
+
+        #region UnityEvents
+
+        protected override void Start()
+        {
+            base.Start();
+            _transform ??= transform;
+        }
+
+
+        protected override void Update()
+        {
         }
 
         #endregion
@@ -61,24 +81,29 @@ namespace RoadSystem
             }
 
             distanceTravelled = 0;
-            _length = pathCreator.path.length;
+
+            if (MoveToPosition && IsLastSegment)
+            {
+                _length = pathCreator.path.GetClosestDistanceAlongPath(DestinationPosition);
+            }
+            else
+            {
+                _length = pathCreator.path.length;
+            }
+
             var duration = (_length - distanceTravelled) / speed;
             var fromValue = distanceTravelled;
 
             _currentTween = DOVirtual.Float(fromValue, _length, duration, value =>
             {
                 distanceTravelled = value;
-                if (distanceTravelled > _length)
-                {
-                    distanceTravelled = _length;
-                }
 
-                transform.position = pathCreator.path.GetPointAtDistance(distanceTravelled, endOfPathInstruction);
-                transform.rotation = pathCreator.path.GetRotationAtDistance(distanceTravelled, endOfPathInstruction);
+                _transform.position = pathCreator.path.GetPointAtDistance(distanceTravelled, endOfPathInstruction);
+                _transform.rotation = pathCreator.path.GetRotationAtDistance(distanceTravelled, endOfPathInstruction);
+
                 if (!isLookingForward)
                 {
-                    var transform1 = transform;
-                    transform1.forward = -transform1.forward;
+                    _transform.forward = -_transform.forward;
                 }
             }).SetEase(Ease.Linear).OnComplete(NextPath);
         }
@@ -91,7 +116,7 @@ namespace RoadSystem
             pathCreator = path[_currentPathIndex].PathCreator;
             if (endOfTotalPathInstruction == EndOfPathInstruction.Stop && _currentPathIndex == 0)
             {
-                CompleteAction?.Invoke();
+                completeAction?.Invoke();
                 return;
             }
 
@@ -135,13 +160,13 @@ namespace RoadSystem
 
         public void AddTaskMoveForward(Vector3 target)
         {
-            var task = new MoveTask(this, roadManager, target, true);
+            var task = new MoveTask(this, roadManager, target, true, true);
             taskHandler.AddTask(task, taskHandler);
         }
 
         public void AddTaskMoveBackward(Vector3 target)
         {
-            var task = new MoveTask(this, roadManager, target, false);
+            var task = new MoveTask(this, roadManager, target, false, true);
             taskHandler.AddTask(task, taskHandler);
         }
 
