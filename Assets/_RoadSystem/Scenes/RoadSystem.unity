@@ -642,6 +642,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1283346008}
   - component: {fileID: 1283346009}
+  - component: {fileID: 1283346010}
   m_Layer: 0
   m_Name: Roads
   m_TagString: Untagged
@@ -680,14 +681,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b872f85fd5a54b52b26cfe02f7514cd3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  roadSegments:
-  - {fileID: 219720315}
-  - {fileID: 295146918}
-  - {fileID: 1652913081}
-  - {fileID: 430985274}
   source: {fileID: 1444364642}
   destination: {fileID: 1116828183}
   vehicle: {fileID: 4125964633052205}
+  pathFinder: {fileID: 1283346010}
+--- !u!114 &1283346010
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1283346007}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a623e8dcb4f4c9f8538bb0a8ab8a280, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _roadSegments:
+  - {fileID: 219720315}
+  - {fileID: 430985274}
+  - {fileID: 295146918}
+  - {fileID: 1652913081}
 --- !u!1 &1372099739
 GameObject:
   m_ObjectHideFlags: 0

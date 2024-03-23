@@ -81,13 +81,14 @@ namespace RoadSystem
             }
             else
             {
-                toDistance = _currentRoadSegment.GetDistanceConnectToOtherSegment(Path[_currentPathIndex + 1], out var length)
-                              ? length
-                              : _currentRoadSegment.PathCreator.path.length;
+                toDistance =
+                    _currentRoadSegment.GetDistanceConnectToOtherSegment(Path[_currentPathIndex + 1], out var length)
+                        ? length
+                        : _currentRoadSegment.PathCreator.path.length;
             }
 
             var duration = Mathf.Abs(toDistance - fromDistance) / speed;
-            
+
             _isRunInReverse = fromDistance > toDistance;
 
             _currentTween = DOVirtual.Float(fromDistance, toDistance, duration, OnVirtualUpdate)
@@ -194,13 +195,13 @@ namespace RoadSystem
 
         public void AddTaskMoveForward(Vector3 target)
         {
-            var task = new MoveTask(this, roadManager, target, true, true);
+            var task = new MoveTask(this, roadManager.PathFinder, target, true, true);
             taskHandler.AddTask(task, taskHandler);
         }
 
         public void AddTaskMoveBackward(Vector3 target)
         {
-            var task = new MoveTask(this, roadManager, target, false, true);
+            var task = new MoveTask(this, roadManager.PathFinder, target, false, true);
             taskHandler.AddTask(task, taskHandler);
         }
 

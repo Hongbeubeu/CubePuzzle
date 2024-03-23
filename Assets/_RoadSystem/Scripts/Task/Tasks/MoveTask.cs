@@ -5,15 +5,15 @@ namespace RoadSystem
     public class MoveTask : BaseTask
     {
         private readonly Vehicle _vehicle;
-        private readonly RoadManager _roadManager;
+        private readonly PathFinder _pathFinder;
         private readonly bool _lookingForward;
         private readonly Vector3 _destination;
         private readonly bool _moveToPosition;
 
-        public MoveTask(Vehicle vehicle, RoadManager roadManager, Vector3 destination, bool lookingForward, bool moveToPosition = false)
+        public MoveTask(Vehicle vehicle, PathFinder pathFinder, Vector3 destination, bool lookingForward, bool moveToPosition = false)
         {
             _vehicle = vehicle;
-            _roadManager = roadManager;
+            _pathFinder = pathFinder;
             _destination = destination;
             _lookingForward = lookingForward;
             _moveToPosition = moveToPosition;
@@ -26,7 +26,7 @@ namespace RoadSystem
 
         private void DoMove()
         {
-            var path = _roadManager.FindPath(_vehicle.transform.position, _destination);
+            var path = _pathFinder.FindPath(_vehicle.transform.position, _destination);
             _vehicle.Path = path;
             _vehicle.LookingForward = _lookingForward;
             _vehicle.MoveToPosition = _moveToPosition;
