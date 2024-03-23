@@ -7,7 +7,7 @@ namespace RoadSystem
 {
     public class PathFinder : MonoBehaviour
     {
-        [SerializeField] private List<RoadSegment> _roadSegments;
+        [SerializeField] private List<RoadSegment> roadSegments;
 
         public List<RoadSegment> FindPath(Vector3 src, Vector3 dest)
         {
@@ -90,7 +90,7 @@ namespace RoadSystem
             var minDistance = Mathf.Infinity;
             RoadSegment result = null;
 
-            foreach (var segment in _roadSegments)
+            foreach (var segment in roadSegments)
             {
                 var distance = segment.FindClosestPoint(position);
                 if (distance > minDistance) continue;
@@ -104,8 +104,8 @@ namespace RoadSystem
         [Button(ButtonSizes.Large)]
         private void ValidateRoadSegments()
         {
-            _roadSegments.Clear();
-            _roadSegments = transform.GetComponentsInChildren<RoadSegment>().ToList();
+            roadSegments.Clear();
+            roadSegments = transform.GetComponentsInChildren<RoadSegment>().ToList();
         }
 #endif
     }
