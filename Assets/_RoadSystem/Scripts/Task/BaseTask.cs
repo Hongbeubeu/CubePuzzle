@@ -4,7 +4,7 @@ namespace RoadSystem
 {
     public abstract class BaseTask : ITask
     {
-        protected List<ITaskListener> _listeners = new();
+        private readonly List<ITaskListener> _listeners = new();
         public abstract void Start();
 
         public void Stop()

@@ -10,34 +10,33 @@ namespace RoadSystem
 {
     public class Vehicle : PathFollower
     {
-        [SerializeField] private bool _isLookingForward;
-        [SerializeField] private EndOfPathInstruction _endOfTotalPathInstruction;
-        [SerializeField] private List<RoadSegment> _path;
-        [SerializeField] private TaskHandler _taskHandler;
-        [SerializeField] private RoadManager _roadManager;
+        #region Fields
 
-        private float length;
-        private int currentPathIndex;
-        private Tween currentTween;
+        [SerializeField] private bool isLookingForward;
+        [SerializeField] private EndOfPathInstruction endOfTotalPathInstruction;
+        [SerializeField] private List<RoadSegment> path;
+        [SerializeField] private TaskHandler taskHandler;
+        [SerializeField] private RoadManager roadManager;
+
+        private float _length;
+        private int _currentPathIndex;
+        private Tween _currentTween;
 
         public Action CompleteAction;
 
         public bool LookingForward
         {
-            get => _isLookingForward;
-            set => _isLookingForward = value;
+            get => isLookingForward;
+            set => isLookingForward = value;
         }
 
         public List<RoadSegment> Path
         {
-            get => _path;
-            set => _path = value;
+            get => path;
+            set => path = value;
         }
 
-        protected override void Update()
-        {
-            // Do nothing
-        }
+        #endregion
 
         [Button(ButtonSizes.Gigantic)]
         public void StartMove()
@@ -49,7 +48,7 @@ namespace RoadSystem
 
         private void DoMove()
         {
-            if (_path == null)
+            if (path == null)
             {
                 Debug.LogError("Path is null");
                 return;
@@ -57,37 +56,40 @@ namespace RoadSystem
 
             if (pathCreator == null)
             {
-                currentPathIndex = 0;
-                pathCreator = _path[currentPathIndex].PathCreator;
+                _currentPathIndex = 0;
+                pathCreator = path[_currentPathIndex].PathCreator;
             }
 
             distanceTravelled = 0;
-            length = pathCreator.path.length;
-            var duration = (length - distanceTravelled) / speed;
+            _length = pathCreator.path.length;
+            var duration = (_length - distanceTravelled) / speed;
             var fromValue = distanceTravelled;
 
-            currentTween = DOVirtual.Float(fromValue, length, duration, value =>
+            _currentTween = DOVirtual.Float(fromValue, _length, duration, value =>
             {
                 distanceTravelled = value;
-                if (distanceTravelled > length)
+                if (distanceTravelled > _length)
                 {
-                    distanceTravelled = length;
+                    distanceTravelled = _length;
                 }
 
                 transform.position = pathCreator.path.GetPointAtDistance(distanceTravelled, endOfPathInstruction);
                 transform.rotation = pathCreator.path.GetRotationAtDistance(distanceTravelled, endOfPathInstruction);
-                if (!_isLookingForward)
-                    transform.forward = -transform.forward;
+                if (!isLookingForward)
+                {
+                    var transform1 = transform;
+                    transform1.forward = -transform1.forward;
+                }
             }).SetEase(Ease.Linear).OnComplete(NextPath);
         }
 
         private void NextPath()
         {
-            currentTween?.Kill();
-            currentPathIndex++;
-            currentPathIndex %= _path.Count;
-            pathCreator = _path[currentPathIndex].PathCreator;
-            if (_endOfTotalPathInstruction == EndOfPathInstruction.Stop && currentPathIndex == 0)
+            _currentTween?.Kill();
+            _currentPathIndex++;
+            _currentPathIndex %= path.Count;
+            pathCreator = path[_currentPathIndex].PathCreator;
+            if (endOfTotalPathInstruction == EndOfPathInstruction.Stop && _currentPathIndex == 0)
             {
                 CompleteAction?.Invoke();
                 return;
@@ -97,47 +99,50 @@ namespace RoadSystem
         }
 
         [Button]
-        private void Pause()
+        public void Pause()
         {
-            currentTween?.Pause();
+            _currentTween?.Pause();
         }
 
         [Button]
-        private void Resume()
+        public void Resume()
         {
-            currentTween?.Play();
+            _currentTween?.Play();
         }
 
         [Button]
         public void Stop()
         {
-            currentTween?.Kill();
+            _currentTween?.Kill();
         }
 
+        #region Test
 
-        [SerializeField] private Transform _point1;
-        [SerializeField] private Transform _point2;
+        [SerializeField] private Transform point1;
+        [SerializeField] private Transform point2;
 
         [Button(ButtonSizes.Gigantic)]
         public void DoMoveTask()
         {
-            AddTaskMoveForward(_point1.position);
-            AddTaskMoveBackward(_point2.position);
-            _taskHandler.Work();
+            AddTaskMoveForward(point1.position);
+            AddTaskMoveBackward(point2.position);
+            taskHandler.Work();
         }
+
+        #endregion
 
         #region TaskHandler
 
         public void AddTaskMoveForward(Vector3 target)
         {
-            var task = new MoveTask(this, _roadManager, target, true);
-            _taskHandler.AddTask(task, _taskHandler);
+            var task = new MoveTask(this, roadManager, target, true);
+            taskHandler.AddTask(task, taskHandler);
         }
 
         public void AddTaskMoveBackward(Vector3 target)
         {
-            var task = new MoveTask(this, _roadManager, target, false);
-            _taskHandler.AddTask(task, _taskHandler);
+            var task = new MoveTask(this, roadManager, target, false);
+            taskHandler.AddTask(task, taskHandler);
         }
 
         #endregion

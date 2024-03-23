@@ -2,25 +2,26 @@
 using PathCreation;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace RoadSystem
 {
     [RequireComponent(typeof(PathCreator))]
     public class RoadSegment : MonoBehaviour
     {
-        [SerializeField] private PathCreator _pathCreator;
+        [SerializeField] private PathCreator pathCreator;
 
-        [SerializeField] private List<RoadSegment> _roadIns = new();
-        [SerializeField] private List<RoadSegment> _roadOuts = new();
+        [SerializeField] private List<RoadSegment> roadIns = new();
+        [SerializeField] private List<RoadSegment> roadOuts = new();
 
-        public PathCreator PathCreator => _pathCreator;
+        public PathCreator PathCreator => pathCreator;
 
-        public List<RoadSegment> RoadIns => _roadIns;
-        public List<RoadSegment> RoadOuts => _roadOuts;
+        public List<RoadSegment> RoadIns => roadIns;
+        public List<RoadSegment> RoadOuts => roadOuts;
 
         public float FindClosestPoint(Vector3 target)
         {
-            return Vector3.Distance(_pathCreator.path.GetClosestPointOnPath(target), target);
+            return Vector3.Distance(pathCreator.path.GetClosestPointOnPath(target), target);
         }
 
 #if UNITY_EDITOR
@@ -28,7 +29,7 @@ namespace RoadSystem
         [Button]
         private void ValidatePathCreator()
         {
-            _pathCreator = GetComponent<PathCreator>();
+            pathCreator = GetComponent<PathCreator>();
         }
 
 #endif

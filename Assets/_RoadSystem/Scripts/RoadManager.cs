@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -7,18 +8,20 @@ namespace RoadSystem
 {
     public class RoadManager : MonoBehaviour
     {
-        [SerializeField] private List<RoadSegment> _roadSegments = new();
+        #region Fields
 
-        [SerializeField] private Transform _source;
-        [SerializeField] private Transform _target;
+        [SerializeField] private List<RoadSegment> roadSegments = new();
+        [SerializeField] private Transform source;
+        [SerializeField] private Transform destination;
+        [SerializeField] private Vehicle vehicle;
 
-        [SerializeField] private Vehicle _vehicle;
+        #endregion
 
 
         [Button(ButtonSizes.Gigantic)]
         private void Test()
         {
-            var path = FindPath(_source.position, _target.position);
+            var path = FindPath(source.position, destination.position);
             if (path == null)
             {
                 Debug.LogError("Not found path");
@@ -30,36 +33,36 @@ namespace RoadSystem
                 Debug.Log(p.name);
             }
 
-            _vehicle.Path = path;
-            _vehicle.Stop();
-            _vehicle.StartMove();
+            vehicle.Path = path;
+            vehicle.Stop();
+            vehicle.StartMove();
         }
 
-        public List<RoadSegment> FindPath(Vector3 source, Vector3 target)
+        public List<RoadSegment> FindPath(Vector3 src, Vector3 dest)
         {
-            var fromSegment = FindNearestSegment(source);
-            var targetSegment = FindNearestSegment(target);
+            var fromSegment = FindNearestSegment(src);
+            var targetSegment = FindNearestSegment(dest);
             return FindPath(fromSegment, targetSegment);
         }
 
-        private List<RoadSegment> FindPath(RoadSegment source, RoadSegment target)
+        private List<RoadSegment> FindPath(RoadSegment src, RoadSegment dest)
         {
-            if (source == target)
+            if (src == dest)
             {
-                return new List<RoadSegment> { source };
+                return new List<RoadSegment> { src };
             }
 
             var queue = new Queue<RoadSegment>();
             var parentMap = new Dictionary<RoadSegment, RoadSegment>();
             var visited = new HashSet<RoadSegment>();
 
-            queue.Enqueue(source);
-            visited.Add(source);
+            queue.Enqueue(src);
+            visited.Add(src);
 
             while (queue.Count > 0)
             {
                 var current = queue.Dequeue();
-                if (current == target)
+                if (current == dest)
                     break;
 
                 foreach (var neighbor in current.RoadOuts)
@@ -72,30 +75,28 @@ namespace RoadSystem
                 }
             }
 
-            if (!parentMap.ContainsKey(target)) return null;
+            if (!parentMap.ContainsKey(dest)) return null;
 
             var path = new List<RoadSegment>();
-            var backtrack = target;
-            while (backtrack != source)
+            var backtrack = dest;
+            while (backtrack != src)
             {
                 path.Add(backtrack);
                 backtrack = parentMap[backtrack];
             }
 
-            path.Add(source);
+            path.Add(src);
             path.Reverse();
 
             return path;
         }
 
-
         private RoadSegment FindNearestSegment(Vector3 position)
         {
-            var currentIndex = 0;
             var minDistance = Mathf.Infinity;
             RoadSegment result = null;
 
-            foreach (var segment in _roadSegments)
+            foreach (var segment in roadSegments)
             {
                 var distance = segment.FindClosestPoint(position);
                 if (distance > minDistance) continue;
@@ -111,22 +112,27 @@ namespace RoadSystem
         [Button(ButtonSizes.Large)]
         private void ValidateRoadSegments()
         {
-            _roadSegments.Clear();
-            _roadSegments = transform.GetComponentsInChildren<RoadSegment>().ToList();
+            roadSegments.Clear();
+            roadSegments = transform.GetComponentsInChildren<RoadSegment>().ToList();
         }
 
         private void OnDrawGizmos()
         {
-            var sourceSegment = FindNearestSegment(_source.position);
-            var p1 = sourceSegment.PathCreator.path.GetClosestPointOnPath(_source.position);
+            if (source == null) return;
+            var position = source.position;
+            var sourceSegment = FindNearestSegment(position);
+            var p1 = sourceSegment.PathCreator.path.GetClosestPointOnPath(position);
 
             Gizmos.color = Color.blue;
-            Gizmos.DrawLine(_source.position, p1);
-            var targetSegment = FindNearestSegment(_target.position);
-            var p2 = targetSegment.PathCreator.path.GetClosestPointOnPath(_target.position);
+            Gizmos.DrawLine(position, p1);
+
+            if (destination == null) return;
+            var position1 = destination.position;
+            var targetSegment = FindNearestSegment(position1);
+            var p2 = targetSegment.PathCreator.path.GetClosestPointOnPath(position1);
 
             Gizmos.color = Color.red;
-            Gizmos.DrawLine(_target.position, p2);
+            Gizmos.DrawLine(position1, p2);
         }
 
 #endif

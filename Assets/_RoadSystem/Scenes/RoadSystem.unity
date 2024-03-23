@@ -252,15 +252,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ecf3ee738644ac9b53f6bd833a6c8dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _pathCreator: {fileID: 219720313}
-  _roadIns:
-  - {fileID: 295146918}
-  - {fileID: 1652913081}
+  pathCreator: {fileID: 219720313}
+  roadIns: []
+  roadOuts:
   - {fileID: 430985274}
-  _roadOuts:
-  - {fileID: 295146918}
   - {fileID: 1652913081}
-  - {fileID: 430985274}
+  - {fileID: 295146918}
 --- !u!1 &295146915
 GameObject:
   m_ObjectHideFlags: 0
@@ -359,15 +356,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ecf3ee738644ac9b53f6bd833a6c8dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _pathCreator: {fileID: 295146916}
-  _roadIns:
+  pathCreator: {fileID: 295146916}
+  roadIns:
   - {fileID: 219720315}
-  - {fileID: 219720315}
-  - {fileID: 430985274}
-  _roadOuts:
-  - {fileID: 219720315}
-  - {fileID: 219720315}
-  - {fileID: 430985274}
+  roadOuts: []
 --- !u!1 &333985684
 GameObject:
   m_ObjectHideFlags: 0
@@ -497,15 +489,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ecf3ee738644ac9b53f6bd833a6c8dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _pathCreator: {fileID: 430985272}
-  _roadIns:
+  pathCreator: {fileID: 430985272}
+  roadIns:
   - {fileID: 219720315}
-  - {fileID: 295146918}
-  - {fileID: 1652913081}
-  _roadOuts:
-  - {fileID: 219720315}
-  - {fileID: 295146918}
-  - {fileID: 1652913081}
+  roadOuts: []
 --- !u!1 &482406696
 GameObject:
   m_ObjectHideFlags: 0
@@ -600,7 +587,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1116828183}
   m_Layer: 0
-  m_Name: Target
+  m_Name: Destination
   m_TagString: Untagged
   m_Icon: {fileID: -5442936267250999957, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
@@ -614,7 +601,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1116828182}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 3.72, y: -1.8979063, z: 2.41}
+  m_LocalPosition: {x: 7.5, y: -1.8979063, z: 1.23}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -669,14 +656,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b872f85fd5a54b52b26cfe02f7514cd3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _roadSegments:
+  roadSegments:
   - {fileID: 219720315}
   - {fileID: 295146918}
   - {fileID: 1652913081}
   - {fileID: 430985274}
-  _source: {fileID: 1444364642}
-  _target: {fileID: 1116828183}
-  _vehicle: {fileID: 4125964633052205}
+  source: {fileID: 1444364642}
+  destination: {fileID: 1116828183}
+  vehicle: {fileID: 4125964633052205}
 --- !u!1 &1372099739
 GameObject:
   m_ObjectHideFlags: 0
@@ -795,7 +782,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1444364641}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.43, y: -1.8979063, z: -0.94}
+  m_LocalPosition: {x: -9.23, y: -1.8979063, z: 1.47}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -900,15 +887,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ecf3ee738644ac9b53f6bd833a6c8dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _pathCreator: {fileID: 1652913079}
-  _roadIns:
+  pathCreator: {fileID: 1652913079}
+  roadIns:
   - {fileID: 219720315}
-  - {fileID: 295146918}
-  - {fileID: 430985274}
-  _roadOuts:
-  - {fileID: 219720315}
-  - {fileID: 295146918}
-  - {fileID: 430985274}
+  roadOuts: []
 --- !u!1 &1048366934829894
 GameObject:
   m_ObjectHideFlags: 0
@@ -1062,15 +1044,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pathCreator: {fileID: 0}
-  endOfPathInstruction: 2
+  endOfPathInstruction: 1
   speed: 3
-  _isLookingForward: 1
-  _endOfTotalPathInstruction: 2
-  _path: []
-  _taskHandler: {fileID: 4125964633052206}
-  _roadManager: {fileID: 1283346009}
-  _point1: {fileID: 333985685}
-  _point2: {fileID: 133653671}
+  isLookingForward: 0
+  endOfTotalPathInstruction: 0
+  path: []
+  taskHandler: {fileID: 4125964633052206}
+  roadManager: {fileID: 1283346009}
+  point1: {fileID: 333985685}
+  point2: {fileID: 133653671}
 --- !u!114 &4125964633052206
 MonoBehaviour:
   m_ObjectHideFlags: 0

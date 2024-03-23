@@ -23,7 +23,7 @@ namespace PathCreation.Examples
             }
         }
 
-        protected virtual void Update()
+        protected void Update()
         {
             if (pathCreator != null)
             {

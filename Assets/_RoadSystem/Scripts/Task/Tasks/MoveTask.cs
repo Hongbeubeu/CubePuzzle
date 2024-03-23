@@ -4,10 +4,10 @@ namespace RoadSystem
 {
     public class MoveTask : BaseTask
     {
-        private Vehicle _vehicle;
-        private RoadManager _roadManager;
-        private bool _lookingForward;
-        private Vector3 _target;
+        private readonly Vehicle _vehicle;
+        private readonly RoadManager _roadManager;
+        private readonly bool _lookingForward;
+        private readonly Vector3 _target;
 
         public MoveTask(Vehicle vehicle, RoadManager roadManager, Vector3 target, bool lookingForward)
         {
