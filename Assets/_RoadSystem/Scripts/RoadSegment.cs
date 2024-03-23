@@ -8,6 +8,8 @@ namespace RoadSystem
     [RequireComponent(typeof(PathCreator))]
     public class RoadSegment : MonoBehaviour
     {
+        #region Fields
+
         [SerializeField] private RoadType roadType;
         [SerializeField] private PathCreator pathCreator;
 
@@ -15,9 +17,12 @@ namespace RoadSystem
         [SerializeField] private List<RoadSegment> roadOuts = new();
 
         public PathCreator PathCreator => pathCreator;
+        public VertexPath Path => PathCreator.path;
 
         public List<RoadSegment> RoadIns => roadIns;
         public List<RoadSegment> RoadOuts => roadOuts;
+
+        #endregion
 
         public float FindClosestPoint(Vector3 target)
         {
@@ -32,16 +37,16 @@ namespace RoadSystem
                 return false;
             }
 
-            var point0 = PathCreator.path.GetPointAtTime(0, EndOfPathInstruction.Stop);
-            var point1 = PathCreator.path.GetPointAtTime(1, EndOfPathInstruction.Stop);
+            var point0 = Path.GetPointAtTime(0, EndOfPathInstruction.Stop);
+            var point1 = Path.GetPointAtTime(1, EndOfPathInstruction.Stop);
 
-            var point2 = toRoadSegment.PathCreator.path.GetClosestPointOnPath(point0);
-            var point3 = toRoadSegment.PathCreator.path.GetClosestPointOnPath(point1);
+            var point2 = toRoadSegment.Path.GetClosestPointOnPath(point0);
+            var point3 = toRoadSegment.Path.GetClosestPointOnPath(point1);
 
             var distance0 = Vector3.Distance(point0, point2);
             var distance1 = Vector3.Distance(point1, point3);
 
-            connectedAt = distance0 < distance1 ? 0 : PathCreator.path.length;
+            connectedAt = distance0 < distance1 ? 0 : Path.length;
             return true;
         }
 

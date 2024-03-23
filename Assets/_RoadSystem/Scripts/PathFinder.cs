@@ -16,13 +16,16 @@ namespace RoadSystem
 
             if (fromSegment == targetSegment)
             {
+                var distance0 = fromSegment.Path.
+                
+                
                 return new List<RoadSegment> { fromSegment };
             }
 
             var path = FindPath(fromSegment, targetSegment);
 
-            if (Vector3.Distance(path[1].PathCreator.path.GetClosestPointOnPath(src), src) < 0.01f
-             && Vector3.Distance(path[0].PathCreator.path.GetClosestPointOnPath(src), src) < 0.01f)
+            if (Vector3.Distance(path[1].Path.GetClosestPointOnPath(src), src) < 0.01f
+             && Vector3.Distance(path[0].Path.GetClosestPointOnPath(src), src) < 0.01f)
             {
                 path.RemoveAt(0);
             }
@@ -30,8 +33,8 @@ namespace RoadSystem
             if (path.Count <= 1)
                 return path;
 
-            if (Vector3.Distance(path[^1].PathCreator.path.GetClosestPointOnPath(dest), dest) < 0.01f
-             && Vector3.Distance(path[^2].PathCreator.path.GetClosestPointOnPath(dest), dest) < 0.01f)
+            if (Vector3.Distance(path[^1].Path.GetClosestPointOnPath(dest), dest) < 0.01f
+             && Vector3.Distance(path[^2].Path.GetClosestPointOnPath(dest), dest) < 0.01f)
             {
                 path.RemoveAt(path.Count - 1);
             }

@@ -71,20 +71,20 @@ namespace RoadSystem
             if (!VerifyPath()) return;
 
             // Get closet distance along path
-            var fromDistance = _currentRoadSegment.PathCreator.path.GetClosestDistanceAlongPath(_transform.position);
+            var fromDistance = _currentRoadSegment.Path.GetClosestDistanceAlongPath(_transform.position);
 
             // Find distance where vehicle run to
             float toDistance;
             if (MoveToPosition && IsLastSegment)
             {
-                toDistance = _currentRoadSegment.PathCreator.path.GetClosestDistanceAlongPath(DestinationPosition);
+                toDistance = _currentRoadSegment.Path.GetClosestDistanceAlongPath(DestinationPosition);
             }
             else
             {
                 toDistance =
                     _currentRoadSegment.GetDistanceConnectToOtherSegment(Path[_currentPathIndex + 1], out var length)
                         ? length
-                        : _currentRoadSegment.PathCreator.path.length;
+                        : _currentRoadSegment.Path.length;
             }
 
             var duration = Mathf.Abs(toDistance - fromDistance) / speed;
@@ -117,9 +117,9 @@ namespace RoadSystem
         private void OnVirtualUpdate(float travelled)
         {
             _transform.position =
-                _currentRoadSegment.PathCreator.path.GetPointAtDistance(travelled, endOfPathInstruction);
+                _currentRoadSegment.Path.GetPointAtDistance(travelled, endOfPathInstruction);
             _transform.rotation =
-                _currentRoadSegment.PathCreator.path.GetRotationAtDistance(travelled, endOfPathInstruction);
+                _currentRoadSegment.Path.GetRotationAtDistance(travelled, endOfPathInstruction);
 
             if (endOfPathInstruction is EndOfPathInstruction.BackLoop or EndOfPathInstruction.BackStop)
             {

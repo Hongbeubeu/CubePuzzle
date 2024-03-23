@@ -44,7 +44,7 @@ namespace RoadSystem
             if (source == null) return;
             var position = source.position;
             var sourceSegment = pathFinder.FindNearestSegment(position);
-            var p1 = sourceSegment.PathCreator.path.GetClosestPointOnPath(position);
+            var p1 = sourceSegment.Path.GetClosestPointOnPath(position);
 
             Gizmos.color = Color.blue;
             Gizmos.DrawLine(position, p1);
@@ -52,7 +52,7 @@ namespace RoadSystem
             if (destination == null) return;
             var position1 = destination.position;
             var targetSegment = pathFinder.FindNearestSegment(position1);
-            var p2 = targetSegment.PathCreator.path.GetClosestPointOnPath(position1);
+            var p2 = targetSegment.Path.GetClosestPointOnPath(position1);
 
             Gizmos.color = Color.red;
             Gizmos.DrawLine(position1, p2);
