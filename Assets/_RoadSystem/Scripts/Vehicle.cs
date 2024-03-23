@@ -101,6 +101,11 @@ namespace RoadSystem
                 _transform.position = pathCreator.path.GetPointAtDistance(distanceTravelled, endOfPathInstruction);
                 _transform.rotation = pathCreator.path.GetRotationAtDistance(distanceTravelled, endOfPathInstruction);
 
+                if (endOfPathInstruction is EndOfPathInstruction.BackLoop or EndOfPathInstruction.BackStop)
+                {
+                    _transform.forward = -_transform.forward;
+                }
+
                 if (!isLookingForward)
                 {
                     _transform.forward = -_transform.forward;

@@ -1,4 +1,5 @@
-﻿using PathCreation.Utility;
+﻿using System;
+using PathCreation.Utility;
 using UnityEngine;
 
 
@@ -49,10 +50,10 @@ namespace PathCreation
         ///<param name="maxAngleError">How much can the angle of the path change before a vertex is added. This allows fewer vertices to be generated in straighter sections.</param>
         ///<param name="minVertexDst">Vertices won't be added closer together than this distance, regardless of angle error.</param>
         public VertexPath(BezierPath bezierPath, Transform transform, float maxAngleError = 0.3f,
-            float minVertexDst = 0) :
+                          float minVertexDst = 0) :
             this(bezierPath,
-                VertexPathUtility.SplitBezierPathByAngleError(bezierPath, maxAngleError, minVertexDst,
-                    VertexPath.accuracy), transform)
+                 VertexPathUtility.SplitBezierPathByAngleError(bezierPath, maxAngleError, minVertexDst,
+                                                               VertexPath.accuracy), transform)
         {
         }
 
@@ -62,8 +63,8 @@ namespace PathCreation
         ///<param name="accuracy">Higher value means the change in angle is checked more frequently.</param>
         public VertexPath(BezierPath bezierPath, Transform transform, float vertexSpacing) :
             this(bezierPath,
-                VertexPathUtility.SplitBezierPathEvenly(bezierPath, Mathf.Max(vertexSpacing, minVertexSpacing),
-                    VertexPath.accuracy), transform)
+                 VertexPathUtility.SplitBezierPathEvenly(bezierPath, Mathf.Max(vertexSpacing, minVertexSpacing),
+                                                         VertexPath.accuracy), transform)
         {
         }
 
@@ -82,7 +83,7 @@ namespace PathCreation
             cumulativeLengthAtEachVertex = new float[numVerts];
             times = new float[numVerts];
             bounds = new Bounds((pathSplitData.minMax.Min + pathSplitData.minMax.Max) / 2,
-                pathSplitData.minMax.Max - pathSplitData.minMax.Min);
+                                pathSplitData.minMax.Max - pathSplitData.minMax.Min);
 
             // Figure out up direction for path
             up = (bounds.size.z > bounds.size.y) ? Vector3.up : -Vector3.forward;
@@ -133,7 +134,7 @@ namespace PathCreation
             {
                 // Get angle between first and last normal (if zero, they're already lined up, otherwise we need to correct)
                 float normalsAngleErrorAcrossJoin = Vector3.SignedAngle(localNormals[localNormals.Length - 1],
-                    localNormals[0], localTangents[0]);
+                                                                        localNormals[0], localTangents[0]);
                 // Gradually rotate the normals along the path to ensure start and end normals line up correctly
                 if (Mathf.Abs(normalsAngleErrorAcrossJoin) > 0.1f) // don't bother correcting if very nearly correct
                 {
@@ -210,7 +211,7 @@ namespace PathCreation
 
         /// Gets point on path based on distance travelled.
         public Vector3 GetPointAtDistance(float dst,
-            EndOfPathInstruction endOfPathInstruction = EndOfPathInstruction.Loop)
+                                          EndOfPathInstruction endOfPathInstruction = EndOfPathInstruction.Loop)
         {
             float t = dst / length;
             return GetPointAtTime(t, endOfPathInstruction);
@@ -218,7 +219,7 @@ namespace PathCreation
 
         /// Gets forward direction on path based on distance travelled.
         public Vector3 GetDirectionAtDistance(float dst,
-            EndOfPathInstruction endOfPathInstruction = EndOfPathInstruction.Loop)
+                                              EndOfPathInstruction endOfPathInstruction = EndOfPathInstruction.Loop)
         {
             float t = dst / length;
             return GetDirection(t, endOfPathInstruction);
@@ -234,7 +235,7 @@ namespace PathCreation
 
         /// Gets a rotation that will orient an object in the direction of the path at this point, with local up point along the path's normal
         public Quaternion GetRotationAtDistance(float dst,
-            EndOfPathInstruction endOfPathInstruction = EndOfPathInstruction.Loop)
+                                                EndOfPathInstruction endOfPathInstruction = EndOfPathInstruction.Loop)
         {
             float t = dst / length;
             return GetRotation(t, endOfPathInstruction);
@@ -252,7 +253,7 @@ namespace PathCreation
         {
             var data = CalculatePercentOnPathData(t, endOfPathInstruction);
             Vector3 dir = Vector3.Lerp(localTangents[data.previousIndex], localTangents[data.nextIndex],
-                data.percentBetweenIndices);
+                                       data.percentBetweenIndices);
             return MathUtility.TransformDirection(dir, transform, space);
         }
 
@@ -261,7 +262,7 @@ namespace PathCreation
         {
             var data = CalculatePercentOnPathData(t, endOfPathInstruction);
             Vector3 normal = Vector3.Lerp(localNormals[data.previousIndex], localNormals[data.nextIndex],
-                data.percentBetweenIndices);
+                                          data.percentBetweenIndices);
             return MathUtility.TransformDirection(normal, transform, space);
         }
 
@@ -296,7 +297,7 @@ namespace PathCreation
         {
             TimeOnPathData data = CalculateClosestPointOnPathData(worldPoint);
             return Mathf.Lerp(cumulativeLengthAtEachVertex[data.previousIndex],
-                cumulativeLengthAtEachVertex[data.nextIndex], data.percentBetweenIndices);
+                              cumulativeLengthAtEachVertex[data.nextIndex], data.percentBetweenIndices);
         }
 
         #endregion
@@ -324,6 +325,18 @@ namespace PathCreation
                     break;
                 case EndOfPathInstruction.Stop:
                     t = Mathf.Clamp01(t);
+                    break;
+                case EndOfPathInstruction.BackStop:
+                    t = 1 - Mathf.Clamp01(t);
+                    break;
+                case EndOfPathInstruction.BackLoop:
+                    if (t < 0)
+                    {
+                        t += Mathf.CeilToInt(Mathf.Abs(t));
+                    }
+
+                    t %= 1;
+                    t = 1 - t;
                     break;
             }
 
