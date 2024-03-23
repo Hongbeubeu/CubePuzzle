@@ -48,20 +48,24 @@ namespace RoadSystem
                 return new List<RoadSegment> { fromSegment };
             }
 
-            if (fromSegment.RoadOuts.Contains(targetSegment))
-            {
-                if (Vector3.Distance(fromSegment.PathCreator.path.GetClosestPointOnPath(src), src) < 0.001f)
-                {
-                    return new List<RoadSegment> { targetSegment };
-                }
+            var path = FindPath(fromSegment, targetSegment);
 
-                if (Vector3.Distance(targetSegment.PathCreator.path.GetClosestPointOnPath(dest), dest) < 0.001f)
-                {
-                    return new List<RoadSegment> { fromSegment };
-                }
+            if (Vector3.Distance(path[1].PathCreator.path.GetClosestPointOnPath(src), src) < 0.01f
+             && Vector3.Distance(path[0].PathCreator.path.GetClosestPointOnPath(src), src) < 0.01f)
+            {
+                path.RemoveAt(0);
             }
 
-            return FindPath(fromSegment, targetSegment);
+            if (path.Count <= 1)
+                return path;
+
+            if (Vector3.Distance(path[^1].PathCreator.path.GetClosestPointOnPath(dest), dest) < 0.01f
+             && Vector3.Distance(path[^2].PathCreator.path.GetClosestPointOnPath(dest), dest) < 0.01f)
+            {
+                path.RemoveAt(path.Count - 1);
+            }
+
+            return path;
         }
 
         private List<RoadSegment> FindPath(RoadSegment src, RoadSegment dest)
