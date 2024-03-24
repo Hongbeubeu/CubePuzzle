@@ -10,7 +10,8 @@ namespace RoadSystem
         private readonly Vector3 _destination;
         private readonly bool _moveToPosition;
 
-        public MoveTask(Vehicle vehicle, PathFinder pathFinder, Vector3 destination, bool lookingForward, bool moveToPosition = false)
+        public MoveTask(Vehicle vehicle, PathFinder pathFinder, Vector3 destination, bool lookingForward,
+            bool moveToPosition = false)
         {
             _vehicle = vehicle;
             _pathFinder = pathFinder;
@@ -27,6 +28,13 @@ namespace RoadSystem
         private void DoMove()
         {
             var path = _pathFinder.FindPath(_vehicle.transform.position, _destination);
+            if (path == null)
+            {
+                Debug.LogError($"Not found path from {_vehicle.transform.position} to {_destination}");
+                _vehicle.FreeAllTask();
+                return;
+            }
+
             _vehicle.Path = path;
             _vehicle.LookingForward = _lookingForward;
             _vehicle.MoveToPosition = _moveToPosition;

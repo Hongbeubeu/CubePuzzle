@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using PathCreation;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -16,6 +17,7 @@ namespace RoadSystem
         [SerializeField] private List<RoadSegment> roadIns = new();
         [SerializeField] private List<RoadSegment> roadOuts = new();
 
+        public RoadType RoadType => roadType;
         public PathCreator PathCreator => pathCreator;
         public VertexPath Path => PathCreator.path;
 
@@ -24,6 +26,14 @@ namespace RoadSystem
 
         #endregion
 
+        public bool IsConnectBy(RoadSegment src)
+        {
+            return RoadIns.Contains(src);
+        }
+        public bool IsConnectTo(RoadSegment target)
+        {
+            return RoadOuts.Contains(target);
+        }
         public float FindClosestPoint(Vector3 target)
         {
             return Vector3.Distance(pathCreator.path.GetClosestPointOnPath(target), target);
@@ -47,6 +57,27 @@ namespace RoadSystem
             var distance1 = Vector3.Distance(point1, point3);
 
             connectedAt = distance0 < distance1 ? 0 : Path.length;
+            return true;
+        }
+
+        public bool GetClosestDistanceConnectToOtherSegment(RoadSegment toRoadSegment, out float connectedAt)
+        {
+            connectedAt = 0;
+            if (!RoadOuts.Contains(toRoadSegment))
+            {
+                return false;
+            }
+            
+            var point0 = toRoadSegment.Path.GetPointAtTime(0, EndOfPathInstruction.Stop);
+            var point1 = toRoadSegment.Path.GetPointAtTime(1, EndOfPathInstruction.Stop);
+
+            var point2 = Path.GetClosestPointOnPath(point0);
+            var point3 = Path.GetClosestPointOnPath(point1);
+
+            var distance0 = Vector3.Distance(point0, point2);
+            var distance1 = Vector3.Distance(point1, point3);
+
+            connectedAt = distance0 < distance1 ? Path.GetClosestDistanceAlongPath(point0) : Path.GetClosestDistanceAlongPath(point1);
             return true;
         }
 

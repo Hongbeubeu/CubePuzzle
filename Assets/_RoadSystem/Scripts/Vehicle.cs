@@ -82,7 +82,7 @@ namespace RoadSystem
             else
             {
                 toDistance =
-                    _currentRoadSegment.GetDistanceConnectToOtherSegment(Path[_currentPathIndex + 1], out var length)
+                    _currentRoadSegment.GetClosestDistanceConnectToOtherSegment(Path[_currentPathIndex + 1], out var length)
                         ? length
                         : _currentRoadSegment.Path.length;
             }
@@ -205,6 +205,10 @@ namespace RoadSystem
             taskHandler.AddTask(task, taskHandler);
         }
 
+        public void FreeAllTask()
+        {
+            taskHandler.FreeAllTask();
+        }
         #endregion
     }
 }
