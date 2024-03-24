@@ -75,16 +75,18 @@ namespace RoadSystem
 
             // Find distance where vehicle run to
             float toDistance;
+            
             if (MoveToPosition && IsLastSegment)
             {
+                // If current segment is last segment on path
+                // then move to closest distance by DestinationPosition
                 toDistance = _currentRoadSegment.Path.GetClosestDistanceAlongPath(DestinationPosition);
             }
             else
             {
-                toDistance =
-                    _currentRoadSegment.GetClosestDistanceConnectToOtherSegment(Path[_currentPathIndex + 1], out var length)
-                        ? length
-                        : _currentRoadSegment.Path.length;
+                // find connected point to next segment then run to it
+                var connectedPoint = _currentRoadSegment.GetConnectPoint(Path[_currentPathIndex + 1]);
+                toDistance = _currentRoadSegment.Path.GetClosestDistanceAlongPath(connectedPoint);
             }
 
             var duration = Mathf.Abs(toDistance - fromDistance) / speed;

@@ -30,10 +30,12 @@ namespace RoadSystem
         {
             return RoadIns.Contains(src);
         }
+
         public bool IsConnectTo(RoadSegment target)
         {
             return RoadOuts.Contains(target);
         }
+
         public float FindClosestPoint(Vector3 target)
         {
             return Vector3.Distance(pathCreator.path.GetClosestPointOnPath(target), target);
@@ -67,7 +69,7 @@ namespace RoadSystem
             {
                 return false;
             }
-            
+
             var point0 = toRoadSegment.Path.GetPointAtTime(0, EndOfPathInstruction.Stop);
             var point1 = toRoadSegment.Path.GetPointAtTime(1, EndOfPathInstruction.Stop);
 
@@ -77,10 +79,41 @@ namespace RoadSystem
             var distance0 = Vector3.Distance(point0, point2);
             var distance1 = Vector3.Distance(point1, point3);
 
-            connectedAt = distance0 < distance1 ? Path.GetClosestDistanceAlongPath(point0) : Path.GetClosestDistanceAlongPath(point1);
+            connectedAt = distance0 < distance1
+                              ? Path.GetClosestDistanceAlongPath(point0)
+                              : Path.GetClosestDistanceAlongPath(point1);
             return true;
         }
 
+        public Vector3 GetConnectPoint(RoadSegment targetSegment)
+        {
+            if (!IsConnectTo(targetSegment))
+            {
+                Debug.LogError($"{this} not connected to {targetSegment}");
+                return Vector3.zero;
+            }
+
+            var srcStartPoint = Path.GetPointAtDistance(0);
+            var srcEndPoint = Path.GetPointAtDistance(Path.length);
+
+            var destStartPoint = targetSegment.Path.GetPointAtDistance(0);
+            var destEndPoint = targetSegment.Path.GetPointAtDistance(targetSegment.Path.length);
+
+            if (IsOnRoadSegment(destStartPoint))
+                return destStartPoint;
+            if (IsOnRoadSegment(destEndPoint))
+                return destStartPoint;
+
+            if (targetSegment.IsOnRoadSegment(srcStartPoint))
+                return srcStartPoint;
+            return srcEndPoint;
+        }
+
+        public bool IsOnRoadSegment(Vector3 checkPoint)
+        {
+            var closestPointOnPath = Path.GetClosestPointOnPath(checkPoint);
+            return Vector3.Distance(closestPointOnPath, checkPoint) <= 0.01f;
+        }
 #if UNITY_EDITOR
 
         [Button]
