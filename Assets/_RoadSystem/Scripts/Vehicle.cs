@@ -23,9 +23,11 @@ namespace RoadSystem
         private RoadSegment _currentRoadSegment;
         private Tween _currentTween;
         private Transform _transform;
+        private bool _isRunInReverse;
 
         public Action completeAction;
         private bool IsLastSegment => _currentPathIndex == path.Count - 1;
+
 
         public bool LookingForward
         {
@@ -90,6 +92,11 @@ namespace RoadSystem
             }
 
             var duration = Mathf.Abs(toDistance - fromDistance) / speed;
+            if(duration <= 0.01f)
+            {
+                NextPath();
+                return;
+            }
 
             _isRunInReverse = fromDistance > toDistance;
 
@@ -113,8 +120,6 @@ namespace RoadSystem
 
             return true;
         }
-
-        private bool _isRunInReverse;
 
         private void OnVirtualUpdate(float travelled)
         {

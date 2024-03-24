@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using PathCreation;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -13,78 +12,35 @@ namespace RoadSystem
 
         [SerializeField] private RoadType roadType;
         [SerializeField] private PathCreator pathCreator;
-
-        [SerializeField] private List<RoadSegment> roadIns = new();
-        [SerializeField] private List<RoadSegment> roadOuts = new();
+        [SerializeField] private List<RoadSegment> connectToRoads = new();
 
         public RoadType RoadType => roadType;
         public PathCreator PathCreator => pathCreator;
         public VertexPath Path => PathCreator.path;
-
-        public List<RoadSegment> RoadIns => roadIns;
-        public List<RoadSegment> RoadOuts => roadOuts;
+        public List<RoadSegment> ConnectToRoads => connectToRoads;
 
         #endregion
-
-        public bool IsConnectBy(RoadSegment src)
-        {
-            return RoadIns.Contains(src);
-        }
-
+        
         public bool IsConnectTo(RoadSegment target)
         {
-            return RoadOuts.Contains(target);
+            return ConnectToRoads.Contains(target);
         }
 
-        public float FindClosestPoint(Vector3 target)
+        /// <summary>
+        /// Find the closest distance from the target position to this segment
+        /// </summary>
+        /// <param name="target">The position for which to find the distance</param>
+        /// <returns>Closest distance from the target position to this segment</returns>
+        public float ClosestDistanceToSegment(Vector3 target)
         {
             return Vector3.Distance(pathCreator.path.GetClosestPointOnPath(target), target);
         }
-
-        public bool GetDistanceConnectToOtherSegment(RoadSegment toRoadSegment, out float connectedAt)
-        {
-            connectedAt = 0;
-            if (!RoadOuts.Contains(toRoadSegment))
-            {
-                return false;
-            }
-
-            var point0 = Path.GetPointAtTime(0, EndOfPathInstruction.Stop);
-            var point1 = Path.GetPointAtTime(1, EndOfPathInstruction.Stop);
-
-            var point2 = toRoadSegment.Path.GetClosestPointOnPath(point0);
-            var point3 = toRoadSegment.Path.GetClosestPointOnPath(point1);
-
-            var distance0 = Vector3.Distance(point0, point2);
-            var distance1 = Vector3.Distance(point1, point3);
-
-            connectedAt = distance0 < distance1 ? 0 : Path.length;
-            return true;
-        }
-
-        public bool GetClosestDistanceConnectToOtherSegment(RoadSegment toRoadSegment, out float connectedAt)
-        {
-            connectedAt = 0;
-            if (!RoadOuts.Contains(toRoadSegment))
-            {
-                return false;
-            }
-
-            var point0 = toRoadSegment.Path.GetPointAtTime(0, EndOfPathInstruction.Stop);
-            var point1 = toRoadSegment.Path.GetPointAtTime(1, EndOfPathInstruction.Stop);
-
-            var point2 = Path.GetClosestPointOnPath(point0);
-            var point3 = Path.GetClosestPointOnPath(point1);
-
-            var distance0 = Vector3.Distance(point0, point2);
-            var distance1 = Vector3.Distance(point1, point3);
-
-            connectedAt = distance0 < distance1
-                              ? Path.GetClosestDistanceAlongPath(point0)
-                              : Path.GetClosestDistanceAlongPath(point1);
-            return true;
-        }
-
+        
+        /// <summary>
+        /// Finds the connected point from this segment to the target segment
+        /// </summary>
+        /// <param name="targetSegment">The segment to which connected points need to be found</param>
+        /// <returns>The point that connects two segments</returns>
         public Vector3 GetConnectPoint(RoadSegment targetSegment)
         {
             if (!IsConnectTo(targetSegment))
@@ -99,20 +55,38 @@ namespace RoadSystem
             var destStartPoint = targetSegment.Path.GetPointAtDistance(0);
             var destEndPoint = targetSegment.Path.GetPointAtDistance(targetSegment.Path.length);
 
-            if (IsOnRoadSegment(destStartPoint))
+            if (IsPointOnRoadSegment(destStartPoint))
                 return destStartPoint;
-            if (IsOnRoadSegment(destEndPoint))
+            if (IsPointOnRoadSegment(destEndPoint))
                 return destStartPoint;
 
-            if (targetSegment.IsOnRoadSegment(srcStartPoint))
+            if (targetSegment.IsPointOnRoadSegment(srcStartPoint))
                 return srcStartPoint;
             return srcEndPoint;
         }
 
-        public bool IsOnRoadSegment(Vector3 checkPoint)
+        /// <summary>
+        /// Check is the point is on this road segment
+        /// </summary>
+        /// <param name="point">The point to check</param>
+        /// <returns>True if the point is on this road segment</returns>
+        public bool IsPointOnRoadSegment(Vector3 point)
         {
-            var closestPointOnPath = Path.GetClosestPointOnPath(checkPoint);
-            return Vector3.Distance(closestPointOnPath, checkPoint) <= 0.01f;
+            var closestPointOnPath = Path.GetClosestPointOnPath(point);
+            return Vector3.Distance(closestPointOnPath, point) <= 0.01f;
+        }
+
+        /// <summary>
+        /// Compare the distance from the root to firstPoint with the distance from the root to secondPoint
+        /// </summary>
+        /// <param name="firstPoint">The first point to compare</param>
+        /// <param name="secondPoint">The second point to compare</param>
+        /// <returns>True if the distance from the root to the firstPoint is less than or equal to the distance from the root to the secondPoint </returns>
+        public bool CompareDistance(Vector3 firstPoint, Vector3 secondPoint)
+        {
+            var distance0 = Path.GetClosestDistanceAlongPath(firstPoint); // Distance from root to fromPoint
+            var distance1 = Path.GetClosestDistanceAlongPath(secondPoint); // Distance from root to toPoint
+            return distance0 <= distance1;
         }
 #if UNITY_EDITOR
 

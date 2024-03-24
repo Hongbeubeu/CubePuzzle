@@ -14,33 +14,7 @@ namespace RoadSystem
             var fromSegment = FindNearestSegment(src);
             var targetSegment = FindNearestSegment(dest);
 
-            if (fromSegment == targetSegment)
-            {
-                var distance0 = fromSegment.Path.GetClosestDistanceAlongPath(src);
-                var distance1 = fromSegment.Path.GetClosestDistanceAlongPath(dest);
-
-                return distance0 > distance1 && fromSegment.RoadType == RoadType.OneWay ? null : new List<RoadSegment> { fromSegment };
-            }
-
-            if (fromSegment.IsConnectTo(targetSegment))
-            {
-                if(Vector3.Distance(fromSegment.Path.GetClosestPointOnPath(dest), dest) < 0.01f
-                && Vector3.Distance(targetSegment.Path.GetClosestPointOnPath(dest), dest) < 0.01f)
-                {
-                    var distance0 = fromSegment.Path.GetClosestDistanceAlongPath(src);
-                    var distance1 = fromSegment.Path.GetClosestDistanceAlongPath(dest);
-                    return fromSegment.RoadType == RoadType.OneWay && distance0 > distance1 ? null : new List<RoadSegment> { fromSegment };
-                }
-                
-                if(Vector3.Distance(fromSegment.Path.GetClosestPointOnPath(src), src) < 0.01f
-                && Vector3.Distance(targetSegment.Path.GetClosestPointOnPath(src), src) < 0.01f)
-                {
-                    var distance0 = targetSegment.Path.GetClosestDistanceAlongPath(src);
-                    var distance1 = targetSegment.Path.GetClosestDistanceAlongPath(dest);
-                    return targetSegment.RoadType == RoadType.OneWay && distance0 > distance1 ? null : new List<RoadSegment> { targetSegment };
-                }
-            }
-
+            // Actually find path from fromSegment to toSegment
             var path = FindPath(fromSegment, src, targetSegment, dest);
 
             if (path == null)
@@ -48,32 +22,11 @@ namespace RoadSystem
                 return null;
             }
 
-            if (Vector3.Distance(path[1].Path.GetClosestPointOnPath(src), src) < 0.01f
-             && Vector3.Distance(path[0].Path.GetClosestPointOnPath(src), src) < 0.01f)
+            if (path.Count == 1)
             {
-                path.RemoveAt(0);
-            }
-
-            if (path.Count <= 1)
-            {
-                var distance0 = fromSegment.Path.GetClosestDistanceAlongPath(src);
-                var distance1 = fromSegment.Path.GetClosestDistanceAlongPath(dest);
-
-                return distance0 > distance1 && fromSegment.RoadType == RoadType.OneWay ? null : path;
-            }
-
-            if (Vector3.Distance(path[^1].Path.GetClosestPointOnPath(dest), dest) < 0.01f
-             && Vector3.Distance(path[^2].Path.GetClosestPointOnPath(dest), dest) < 0.01f)
-            {
-                path.RemoveAt(path.Count - 1);
-            }
-
-            if (path.Count <= 1)
-            {
-                var distance0 = fromSegment.Path.GetClosestDistanceAlongPath(src);
-                var distance1 = fromSegment.Path.GetClosestDistanceAlongPath(dest);
-
-                return distance0 > distance1 && fromSegment.RoadType == RoadType.OneWay ? null : path;
+                return path[0].RoadType == RoadType.OneWay && !path[0].CompareDistance(src, dest)
+                           ? null
+                           : path;
             }
 
             return path;
@@ -83,7 +36,14 @@ namespace RoadSystem
         {
             if (src == dest)
             {
-                return new List<RoadSegment> { src };
+                return src.RoadType == RoadType.OneWay && !src.CompareDistance(srcPoint, destPoint)
+                           ? null
+                           : new List<RoadSegment> { src };
+            }
+
+            if (src.IsConnectTo(dest))
+            {
+                return new List<RoadSegment> { src, dest };
             }
 
             var queue = new Queue<RoadSegment>();
@@ -91,7 +51,6 @@ namespace RoadSystem
             var visited = new HashSet<RoadSegment>();
 
             var currentDistance = src.Path.GetClosestDistanceAlongPath(srcPoint);
-            var lastDistance = dest.Path.GetClosestDistanceAlongPath(destPoint);
 
             queue.Enqueue(src);
             visited.Add(src);
@@ -102,18 +61,21 @@ namespace RoadSystem
 
                 if (parentMap.TryGetValue(current, out var parent))
                 {
-                    current.GetClosestDistanceConnectToOtherSegment(parent, connectedAt: out currentDistance);
+                    var connectedPoint = current.GetConnectPoint(parent);
+                    currentDistance = current.Path.GetClosestDistanceAlongPath(connectedPoint);
                 }
-                
+
                 if (current == dest)
                 {
                     break;
                 }
 
-                foreach (var neighbor in current.RoadOuts)
+                foreach (var neighbor in current.ConnectToRoads)
                 {
                     if (visited.Contains(neighbor)) continue;
-                    current.GetClosestDistanceConnectToOtherSegment(neighbor, out var distance);
+
+                    var connectedPoint = current.GetConnectPoint(neighbor);
+                    var distance = current.Path.GetClosestDistanceAlongPath(connectedPoint);
                     if (current.RoadType == RoadType.OneWay)
                     {
                         if (distance < currentDistance) continue;
@@ -127,6 +89,14 @@ namespace RoadSystem
 
             if (!parentMap.ContainsKey(dest)) return null;
 
+            var path = BackTrackingPath(src, dest, parentMap);
+
+            return path;
+        }
+
+        private List<RoadSegment> BackTrackingPath(RoadSegment src, RoadSegment dest,
+            Dictionary<RoadSegment, RoadSegment> parentMap)
+        {
             var path = new List<RoadSegment>();
             var backtrack = dest;
             while (backtrack != src)
@@ -137,7 +107,6 @@ namespace RoadSystem
 
             path.Add(src);
             path.Reverse();
-
             return path;
         }
 
@@ -148,7 +117,7 @@ namespace RoadSystem
 
             foreach (var segment in roadSegments)
             {
-                var distance = segment.FindClosestPoint(position);
+                var distance = segment.ClosestDistanceToSegment(position);
                 if (distance > minDistance) continue;
                 minDistance = distance;
                 result = segment;
