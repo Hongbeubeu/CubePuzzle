@@ -27,8 +27,7 @@ namespace RoadSystem
         private Transform _transform;
         private bool _isRunInReverse;
         private Sequence _tweenSequence;
-
-        public Action completeAction;
+        public event Action CompleteAction;
         private bool IsLastSegment => _currentPathIndex == path.Count - 1;
 
 
@@ -134,7 +133,8 @@ namespace RoadSystem
             else
             {
                 // Find connected point to next segment then run to it
-                var connectedPoint = RoadSegmentHelper.GetCrossingPoint(_currentRoadSegment, Path[_currentPathIndex + 1]);
+                var connectedPoint =
+                    RoadSegmentHelper.GetCrossingPoint(_currentRoadSegment, Path[_currentPathIndex + 1]);
                 toDistance = _currentRoadSegment.Path.GetClosestDistanceAlongPath(connectedPoint);
             }
 
@@ -188,7 +188,7 @@ namespace RoadSystem
             _currentRoadSegment = path[_currentPathIndex];
             if (endOfTotalPathInstruction == EndOfPathInstruction.Stop && _currentPathIndex == 0)
             {
-                completeAction?.Invoke();
+                CompleteAction?.Invoke();
                 return;
             }
 
@@ -239,12 +239,14 @@ namespace RoadSystem
 
         public void AddTaskMoveForward(Vector3 target)
         {
+            if (_transform.position == target) return;
             var task = new MoveTask(this, roadManager.PathFinder, target, true, true);
             taskHandler.AddTask(task, taskHandler);
         }
 
         public void AddTaskMoveBackward(Vector3 target)
         {
+            if (_transform.position == target) return;
             var task = new MoveTask(this, roadManager.PathFinder, target, false, true);
             taskHandler.AddTask(task, taskHandler);
         }

@@ -39,13 +39,14 @@ namespace RoadSystem
             _vehicle.LookingForward = _lookingForward;
             _vehicle.MoveToPosition = _moveToPosition;
             _vehicle.DestinationPosition = _destination;
+            _vehicle.CompleteAction += OnCompleted;
             _vehicle.StartMove();
-            _vehicle.completeAction += OnCompleted;
         }
 
         public override void OnCompleted()
         {
             base.OnCompleted();
+            _vehicle.CompleteAction -= OnCompleted;
             ConcludeTask();
         }
     }
