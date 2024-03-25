@@ -24,7 +24,7 @@ namespace RoadSystem
 
             if (path.Count == 1)
             {
-                return path[0].RoadType == RoadType.OneWay && !path[0].CompareDistance(src, dest)
+                return path[0].NeedToCheckWayType && !path[0].CompareDistance(src, dest)
                            ? null
                            : path;
             }
@@ -36,7 +36,7 @@ namespace RoadSystem
         {
             if (src == dest)
             {
-                return src.RoadType == RoadType.OneWay && !src.CompareDistance(srcPoint, destPoint)
+                return src.NeedToCheckWayType && !src.CompareDistance(srcPoint, destPoint)
                            ? null
                            : new List<RoadSegment> { src };
             }
@@ -61,7 +61,7 @@ namespace RoadSystem
 
                 if (parentMap.TryGetValue(current, out var parent))
                 {
-                    var connectedPoint = current.GetConnectPoint(parent);
+                    var connectedPoint = RoadSegmentHelper.GetCrossingPoint(current, parent);
                     currentDistance = current.Path.GetClosestDistanceAlongPath(connectedPoint);
                 }
 
@@ -74,9 +74,9 @@ namespace RoadSystem
                 {
                     if (visited.Contains(neighbor)) continue;
 
-                    var connectedPoint = current.GetConnectPoint(neighbor);
+                    var connectedPoint = RoadSegmentHelper.GetCrossingPoint(current, neighbor);
                     var distance = current.Path.GetClosestDistanceAlongPath(connectedPoint);
-                    if (current.RoadType == RoadType.OneWay)
+                    if (current.NeedToCheckWayType)
                     {
                         if (distance < currentDistance) continue;
                     }

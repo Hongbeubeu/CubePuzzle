@@ -20,10 +20,13 @@ namespace RoadSystem
         [SerializeField] private RoadManager roadManager;
 
         private int _currentPathIndex;
+
         private RoadSegment _currentRoadSegment;
-        private Tween _currentTween;
+
+        // private Tween _currentTween;
         private Transform _transform;
         private bool _isRunInReverse;
+        private Sequence _tweenSequence;
 
         public Action completeAction;
         private bool IsLastSegment => _currentPathIndex == path.Count - 1;
@@ -54,7 +57,6 @@ namespace RoadSystem
             _transform ??= transform;
         }
 
-
         protected override void Update()
         {
         }
@@ -63,7 +65,7 @@ namespace RoadSystem
 
         public void StartMove()
         {
-            Stop();
+            // Stop();
             _currentRoadSegment = null;
             DoMove();
         }
@@ -76,8 +78,53 @@ namespace RoadSystem
             var fromDistance = _currentRoadSegment.Path.GetClosestDistanceAlongPath(_transform.position);
 
             // Find distance where vehicle run to
+            var toDistance = CalculateTargetDistance();
+
+            var duration = Mathf.Abs(toDistance - fromDistance) / speed;
+            if (duration <= 0.01f)
+            {
+                NextPath();
+                return;
+            }
+
+            DoTweenMove(fromDistance, toDistance, duration);
+        }
+
+        private void DoTweenMove(float fromDistance, float toDistance, float duration)
+        {
+            _tweenSequence = DOTween.Sequence();
+            if (!_currentRoadSegment.PathCreator.bezierPath.IsClosed || fromDistance < toDistance)
+            {
+                _isRunInReverse = fromDistance > toDistance;
+
+                var tween = DOVirtual.Float(fromDistance, toDistance, duration, OnVirtualUpdate).SetEase(Ease.Linear);
+                _tweenSequence.Append(tween);
+                _tweenSequence.AppendCallback(NextPath);
+                _tweenSequence.Play();
+            }
+            else // if current segment is oneway and closed then run into 2 times
+            {
+                var toTempDistance = _currentRoadSegment.Path.length;
+                _isRunInReverse = false;
+                duration = Mathf.Abs(toTempDistance - fromDistance) / speed;
+                var tween0 = DOVirtual.Float(fromDistance, toTempDistance, duration, OnVirtualUpdate)
+                                      .SetEase(Ease.Linear);
+                _tweenSequence.Append(tween0);
+
+                duration = Mathf.Abs(toDistance) / speed;
+                var tween1 = DOVirtual
+                            .Float(0, toDistance, duration, OnVirtualUpdate)
+                            .SetEase(Ease.Linear);
+
+                _tweenSequence.Append(tween1);
+                _tweenSequence.AppendCallback(NextPath);
+                _tweenSequence.Play();
+            }
+        }
+
+        private float CalculateTargetDistance()
+        {
             float toDistance;
-            
             if (MoveToPosition && IsLastSegment)
             {
                 // If current segment is last segment on path
@@ -86,23 +133,12 @@ namespace RoadSystem
             }
             else
             {
-                // find connected point to next segment then run to it
-                var connectedPoint = _currentRoadSegment.GetConnectPoint(Path[_currentPathIndex + 1]);
+                // Find connected point to next segment then run to it
+                var connectedPoint = RoadSegmentHelper.GetCrossingPoint(_currentRoadSegment, Path[_currentPathIndex + 1]);
                 toDistance = _currentRoadSegment.Path.GetClosestDistanceAlongPath(connectedPoint);
             }
 
-            var duration = Mathf.Abs(toDistance - fromDistance) / speed;
-            if(duration <= 0.01f)
-            {
-                NextPath();
-                return;
-            }
-
-            _isRunInReverse = fromDistance > toDistance;
-
-            _currentTween = DOVirtual.Float(fromDistance, toDistance, duration, OnVirtualUpdate)
-                                     .SetEase(Ease.Linear)
-                                     .OnComplete(NextPath);
+            return toDistance;
         }
 
         private bool VerifyPath()
@@ -146,7 +182,7 @@ namespace RoadSystem
 
         private void NextPath()
         {
-            _currentTween?.Kill();
+            // Stop();
             _currentPathIndex++;
             _currentPathIndex %= path.Count;
             _currentRoadSegment = path[_currentPathIndex];
@@ -159,22 +195,23 @@ namespace RoadSystem
             DoMove();
         }
 
-        [Button]
+        [Button(ButtonSizes.Large)]
         public void Pause()
         {
-            _currentTween?.Pause();
+            _tweenSequence?.Pause();
         }
 
-        [Button]
+        [Button(ButtonSizes.Large)]
         public void Resume()
         {
-            _currentTween?.Play();
+            _tweenSequence?.Play();
         }
 
-        [Button]
+        [Button(ButtonSizes.Large)]
         public void Stop()
         {
-            _currentTween?.Kill();
+            _tweenSequence?.Kill();
+            FreeAllTask();
         }
 
         #region Test
@@ -216,6 +253,7 @@ namespace RoadSystem
         {
             taskHandler.FreeAllTask();
         }
+
         #endregion
     }
 }
